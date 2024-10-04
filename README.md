@@ -61,7 +61,7 @@ Follow the step-by-step instructions in the tutorial, and you'll be coding your 
 
 ```bash
 sudo apt update
-sudo apt install libsdl2-dev libglew-dev libgl1-mesa-dev cmake g++ gcc
+sudo apt install libsdl2-dev libglew-dev libgl1-mesa-dev cmake gcc
 ```
 
 ## 📚 Tutorial Structure
@@ -79,4 +79,3 @@ This project is licensed under the MIT License – see the LICENSE file for deta
 ---
 
 Enjoy building your own retro game with Pibit, and happy coding! 🎉
-
