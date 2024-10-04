@@ -45,11 +45,24 @@ To follow along with the tutorial, you'll need:
 Clone this repository to get started:
 
 ```bash
-git clone https://github.com/yourusername/pibit-brickout-tutorial.git
+git clone https://github.com/kion-dgl/pibit-brickout-tutorial.git
 cd pibit-brickout-tutorial
 ```
 
 Follow the step-by-step instructions in the tutorial, and you'll be coding your own Brickout game in no time!
+
+## Essential Dependencies:
+
+- SDL2 – The core library for handling input, window management, and rendering.
+- OpenGL – For rendering 2D/3D graphics.
+- GLEW – The OpenGL Extension Wrangler Library to manage OpenGL extensions.
+- CMake – A build system generator to help you compile your code (if needed).
+- GCC – The GNU Compiler Collection to compile your C code.
+
+```bash
+sudo apt update
+sudo apt install libsdl2-dev libglew-dev libgl1-mesa-dev cmake g++ gcc
+```
 
 ## 📚 Tutorial Structure
 
