@@ -24,7 +24,7 @@ const GLchar* fragmentShaderSource = R"(
 )";
 
 // Square vertices (100x100 square centered at 400, 240)
-GLfloat squareVertices[] = {
+GLfloat vertices[] = {
     // First triangle (top-left, bottom-left, bottom-right)
     350.0f, 250.0f, 0.0f,  // Top-left vertex
     350.0f, 150.0f, 0.0f,  // Bottom-left vertex
@@ -36,11 +36,13 @@ GLfloat squareVertices[] = {
     450.0f, 250.0f, 0.0f   // Top-right vertex
 };
 
+// Function to compile a shader
 GLuint compileShader(GLenum type, const GLchar* source) {
     GLuint shader = glCreateShader(type);
     glShaderSource(shader, 1, &source, NULL);
     glCompileShader(shader);
 
+    // Check for compilation errors
     GLint success;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (!success) {
@@ -53,6 +55,7 @@ GLuint compileShader(GLenum type, const GLchar* source) {
     return shader;
 }
 
+// Function to create a shader program
 GLuint createShaderProgram() {
     GLuint vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
     GLuint fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
@@ -62,6 +65,7 @@ GLuint createShaderProgram() {
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
 
+    // Check for linking errors
     GLint success;
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
@@ -71,6 +75,7 @@ GLuint createShaderProgram() {
         return 0;
     }
 
+    // Clean up shaders (they're now part of the program)
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
@@ -78,11 +83,18 @@ GLuint createShaderProgram() {
 }
 
 int main(int argc, char* argv[]) {
+    // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
 
+    // Set OpenGL ES 2.0
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+
+    // Create an 800x480 window
     SDL_Window* window = SDL_CreateWindow("Brickout - Pibit",
                                           SDL_WINDOWPOS_CENTERED,
                                           SDL_WINDOWPOS_CENTERED,
@@ -95,6 +107,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    // Create an OpenGL context
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
     if (glContext == NULL) {
         printf("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -103,7 +116,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    glewExperimental = GL_TRUE;
+    // Initialize GLEW
+    glewExperimental = GL_TRUE; // Ensure GLEW uses modern techniques
     if (glewInit() != GLEW_OK) {
         printf("Error initializing GLEW!\n");
         SDL_GL_DeleteContext(glContext);
@@ -112,18 +126,28 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    // Set the viewport
     glViewport(0, 0, 800, 480);
 
+    // Create and use the shader program
     GLuint shaderProgram = createShaderProgram();
     glUseProgram(shaderProgram);
 
+    // Create a vertex buffer object (VBO) and upload the vertex data
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertices), squareVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // Get the location of the "position" attribute in the vertex shader
     GLint positionAttrib = glGetAttribLocation(shaderProgram, "position");
     glEnableVertexAttribArray(positionAttrib);
+    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+
+    // Enable the position attribute
+    glEnableVertexAttribArray(positionAttrib);
+
+    // Specify how the data for the position attribute is retrieved from the buffer
     glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
 
     // Create an orthographic projection matrix for 800x480 window
@@ -134,23 +158,29 @@ int main(int argc, char* argv[]) {
     GLint projectionUniform = glGetUniformLocation(shaderProgram, "projection");
     glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, orthoMatrix);
 
+    // Main loop
     int running = 1;
     SDL_Event event;
     while (running) {
+        // Event handling
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = 0;
             }
         }
 
+        // Clear the screen
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f); // Set a background color
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Draw the square (6 vertices, 2 triangles)
+        // Draw the triangle
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
+        // Swap the buffers (double buffering)
         SDL_GL_SwapWindow(window);
     }
 
+    // Cleanup
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderProgram);
     SDL_GL_DeleteContext(glContext);
