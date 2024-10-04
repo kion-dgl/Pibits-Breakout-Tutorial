@@ -1,0 +1,24 @@
+# Ignore compiled binary
+brickout
+
+# Ignore object files
+*.o
+
+# Ignore debugging files
+*.dSYM
+*.stackdump
+
+# Ignore temporary files
+*.tmp
+*.log
+*.swp
+*.swo
+
+# Ignore editor and IDE specific files
+.vscode/
+.idea/
+*.code-workspace
+
+# Ignore system files
+.DS_Store
+Thumbs.db
