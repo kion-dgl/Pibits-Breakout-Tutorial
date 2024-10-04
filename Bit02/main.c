@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <stdio.h>
 
-void createOrthoProjectionMatrix(float left, float right, float bottom, float top, float near, float far, float* matrix);
+void createOrthoProjectionMatrix(float* matrix, float width, float height);
 
 // Vertex Shader source code (with projection matrix support)
 const GLchar* vertexShaderSource = R"(
@@ -152,7 +152,7 @@ int main(int argc, char* argv[]) {
 
     // Create an orthographic projection matrix for 800x480 window
     float orthoMatrix[16];
-    createOrthoProjectionMatrix(0.0f, 800.0f, 0.0f, 480.0f, 0.1f, 100.0f, orthoMatrix);
+    createOrthoProjectionMatrix(orthoMatrix, 800.0f, 480.0f);
 
     // Get the location of the projection matrix in the shader and set it
     GLint projectionUniform = glGetUniformLocation(shaderProgram, "projection");
@@ -190,7 +190,17 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-void createOrthoProjectionMatrix(float left, float right, float bottom, float top, float near, float far, float* matrix) {
+void createOrthoProjectionMatrix(float* matrix, float width, float height) {
+
+    float right, left, top, bottom;
+	bottom = 0;
+	top = height;
+	left = 0;
+	right = width;
+
+	float zNear = -0.1f;
+	float zFar = 1.0f;
+
     matrix[0] = 2.0f / (right - left);
     matrix[1] = 0.0f;
     matrix[2] = 0.0f;
@@ -203,11 +213,11 @@ void createOrthoProjectionMatrix(float left, float right, float bottom, float to
 
     matrix[8] = 0.0f;
     matrix[9] = 0.0f;
-    matrix[10] = -2.0f / (far - near);
+    matrix[10] = -2.0f / (zFar - zNear);
     matrix[11] = 0.0f;
 
     matrix[12] = -(right + left) / (right - left);
     matrix[13] = -(top + bottom) / (top - bottom);
-    matrix[14] = -(far + near) / (far - near);
+    matrix[14] = -(zFar + zNear) / (zFar - zNear);
     matrix[15] = 1.0f;
 }
