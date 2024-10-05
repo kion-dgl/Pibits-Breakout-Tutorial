@@ -46,12 +46,17 @@ const GLchar* vertexShaderSource = R"(
 // Updated Fragment Shader source code
 const GLchar* fragmentShaderSource = R"(
     precision mediump float;
-    varying vec2 TexCoord; // Pass the texture coordinates from the vertex shader
-    uniform sampler2D textureSampler; // The texture sampler
+    varying vec2 TexCoord;
+    uniform sampler2D textureSampler;
 
     void main()
     {
-        gl_FragColor = texture2D(textureSampler, TexCoord); // Sample the texture
+        vec4 texColor = texture2D(textureSampler, TexCoord); // Sample the texture color
+        // Discard the fragment if the alpha value is below the threshold
+        if (texColor.a < 0.1) {
+            discard;
+        }
+        gl_FragColor = texColor; // Set the fragment color
     }
 )";
 
