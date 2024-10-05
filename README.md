@@ -61,7 +61,7 @@ Follow the step-by-step instructions in the tutorial, and you'll be coding your 
 
 ```bash
 sudo apt update
-sudo apt install libsdl2-dev libglew-dev libgl1-mesa-dev cmake gcc
+sudo apt install libsdl2-dev libsdl2-image-dev libglew-dev libgl1-mesa-dev cmake gcc
 ```
 
 ## 📚 Tutorial Structure
