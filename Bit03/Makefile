@@ -1,7 +1,7 @@
 # Variables
 CC = gcc
 CFLAGS = -Wall -g
-LIBS = -lSDL2 -lGLEW -lGL
+LIBS = -lSDL2 -lSDL2_image -lGL -lGLEW -lm
 SRC = main.c
 TARGET = brickout
 

@@ -1,40 +1,73 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <GL/glew.h>
 #include <stdio.h>
 
 void createOrthoProjectionMatrix(float* matrix, float width, float height);
 
-// Vertex Shader source code (with projection matrix support)
+GLuint loadTexture(const char* filePath) {
+    SDL_Surface* surface = IMG_Load(filePath);
+    if (!surface) {
+        printf("Error: Unable to load image %s! SDL_image Error: %s\n", filePath, IMG_GetError());
+        return 0;
+    }
+
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Upload texture data
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+
+    SDL_FreeSurface(surface);
+    return textureID;
+}
+
+
+// Updated Vertex Shader source code
 const GLchar* vertexShaderSource = R"(
     attribute vec4 position;
+    attribute vec2 texCoord;
+    varying vec2 TexCoord;
     uniform mat4 projection;
+
     void main()
     {
         gl_Position = projection * position;
+        TexCoord = texCoord; // Pass texture coordinates to fragment shader
     }
 )";
 
-// Fragment Shader source code
+
+// Updated Fragment Shader source code
 const GLchar* fragmentShaderSource = R"(
     precision mediump float;
+    varying vec2 TexCoord; // Pass the texture coordinates from the vertex shader
+    uniform sampler2D textureSampler; // The texture sampler
+
     void main()
     {
-        gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // Blue color
+        gl_FragColor = texture2D(textureSampler, TexCoord); // Sample the texture
     }
 )";
 
-// Square vertices (100x100 square centered at 400, 240)
-GLfloat vertices[] = {
-    // First triangle (top-left, bottom-left, bottom-right)
-    350.0f, 250.0f, 0.0f,  // Top-left vertex
-    350.0f, 150.0f, 0.0f,  // Bottom-left vertex
-    450.0f, 150.0f, 0.0f,  // Bottom-right vertex
 
-    // Second triangle (top-left, bottom-right, top-right)
-    350.0f, 250.0f, 0.0f,  // Top-left vertex
-    450.0f, 150.0f, 0.0f,  // Bottom-right vertex
-    450.0f, 250.0f, 0.0f   // Top-right vertex
+// Updated vertex data (with texture coordinates)
+GLfloat vertices[] = {
+    // Position (X, Y, Z)   // Texture coordinates (U, V)
+    350.0f, 250.0f, 0.0f,  0.0f, 1.0f,  // Top-left
+    350.0f, 150.0f, 0.0f,  0.0f, 0.0f,  // Bottom-left
+    450.0f, 150.0f, 0.0f,  1.0f, 0.0f,  // Bottom-right
+
+    350.0f, 250.0f, 0.0f,  0.0f, 1.0f,  // Top-left
+    450.0f, 150.0f, 0.0f,  1.0f, 0.0f,  // Bottom-right
+    450.0f, 250.0f, 0.0f,  1.0f, 1.0f   // Top-right
 };
+
 
 // Function to compile a shader
 GLuint compileShader(GLenum type, const GLchar* source) {
@@ -142,13 +175,11 @@ int main(int argc, char* argv[]) {
     // Get the location of the "position" attribute in the vertex shader
     GLint positionAttrib = glGetAttribLocation(shaderProgram, "position");
     glEnableVertexAttribArray(positionAttrib);
-    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
 
     // Enable the position attribute
     glEnableVertexAttribArray(positionAttrib);
 
-    // Specify how the data for the position attribute is retrieved from the buffer
-    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
 
     // Create an orthographic projection matrix for 800x480 window
     float orthoMatrix[16];
@@ -157,6 +188,17 @@ int main(int argc, char* argv[]) {
     // Get the location of the projection matrix in the shader and set it
     GLint projectionUniform = glGetUniformLocation(shaderProgram, "projection");
     glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, orthoMatrix);
+
+    // Get the location of the "texCoord" attribute in the vertex shader
+    GLint texCoordAttrib = glGetAttribLocation(shaderProgram, "texCoord");
+    glEnableVertexAttribArray(texCoordAttrib);
+    glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat))); // Texture coordinates
+
+    GLuint ballTexture = loadTexture("ball.png"); // Load your PNG file
+
+    // Inside the main loop, before drawing:
+    glBindTexture(GL_TEXTURE_2D, ballTexture);
+
 
     // Main loop
     int running = 1;
@@ -173,8 +215,10 @@ int main(int argc, char* argv[]) {
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f); // Set a background color
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Draw the triangle
+        // Inside the main loop, before drawing
+        glBindTexture(GL_TEXTURE_2D, ballTexture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
+
 
         // Swap the buffers (double buffering)
         SDL_GL_SwapWindow(window);
