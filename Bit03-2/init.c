@@ -61,5 +61,8 @@ int initializeSDLAndOpenGL(SDL_Window** window, SDL_GLContext* glContext, GLuint
     GLint projectionUniform = glGetUniformLocation(*shaderProgram, "projection");
     glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, orthoMatrix);
 
+    // Clear the screen
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f); // Set a background color
+
     return 0;  // Return success
 }
