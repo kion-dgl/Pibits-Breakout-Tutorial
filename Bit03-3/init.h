@@ -5,7 +5,15 @@
 #include <GL/glew.h>
 
 // Function declarations for initialization
+
+typedef struct {
+    GLuint VBO;         // Vertex Buffer Object
+    GLuint textureID;   // Texture ID
+    float radius;       // Radius of the ball
+} Ball;
+
+
 int initializeSDLAndOpenGL(SDL_Window** window, SDL_GLContext* glContext, GLuint* shaderProgram);
-void initBall(GLuint* VBO, GLuint* textureID, GLuint shaderProgram);
+void initBall(Ball* ball, GLuint shaderProgram);
 
 #endif // INIT_H

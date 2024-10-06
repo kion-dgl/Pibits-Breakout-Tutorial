@@ -2,27 +2,29 @@
 #include "utils.h"  // Include utils.h for createShaderProgram
 #include <stdio.h>
 
-void initBall(GLuint* VBO, GLuint* textureID, GLuint shaderProgram) {
+void initBall(Ball* ball, GLuint shaderProgram) {
+     ball->radius = 15.0f;
+
     // Hard-coded vertex data for a ball (you can adjust these values as needed)
     GLfloat vertices[] = {
-        // Position (X, Y, Z)   // Texture coordinates (U, V)
-        0.0f, 50.0f, 0.0f,  0.0f, 1.0f,  // Top-left
-        0.0f, 0.0f, 0.0f,  0.0f, 0.0f,  // Bottom-left
-        50.0f, 0.0f, 0.0f,  1.0f, 0.0f,  // Bottom-right
+        // Position (X, Y, Z)          // Texture coordinates (U, V)
+        -ball->radius,  ball->radius, 0.0f,   0.0f, 1.0f,  // Top-left
+        -ball->radius, -ball->radius, 0.0f,   0.0f, 0.0f,  // Bottom-left
+         ball->radius, -ball->radius, 0.0f,   1.0f, 0.0f,  // Bottom-right
 
-        0.0f, 50.0f, 0.0f,  0.0f, 1.0f,  // Top-left
-        50.0f, 0.0f, 0.0f,  1.0f, 0.0f,  // Bottom-right
-        50.0f, 50.0f, 0.0f,  1.0f, 1.0f   // Top-right
+        -ball->radius,  ball->radius, 0.0f,   0.0f, 1.0f,  // Top-left
+         ball->radius, -ball->radius, 0.0f,   1.0f, 0.0f,  // Bottom-right
+         ball->radius,  ball->radius, 0.0f,   1.0f, 1.0f   // Top-right
     };
 
     // Generate and bind the VBO
-    glGenBuffers(1, VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, *VBO);
+    glGenBuffers(1, &ball->VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, ball->VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // Hard-coded texture file path for the ball
     const char* textureFilePath = "ball.png";
-    *textureID = loadTexture(textureFilePath);
+    ball->textureID = loadTexture(textureFilePath);
 
     // Set up position attribute
     GLint positionAttrib = glGetAttribLocation(shaderProgram, "position");

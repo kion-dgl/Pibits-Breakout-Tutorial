@@ -15,9 +15,8 @@ int main(int argc, char* argv[]) {
     }
 
     // Initialize ball (vertices, VBO, and texture)
-    GLuint VBO;
-    GLuint ballTexture;
-    initBall(&VBO, &ballTexture, shaderProgram);
+    Ball ball;
+    initBall(&ball, shaderProgram);
 
     // Main loop
     int running = 1;
@@ -33,7 +32,7 @@ int main(int argc, char* argv[]) {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Inside the main loop, before drawing
-        glBindTexture(GL_TEXTURE_2D, ballTexture);
+        glBindTexture(GL_TEXTURE_2D, ball.textureID);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // Swap the buffers (double buffering)
@@ -41,7 +40,8 @@ int main(int argc, char* argv[]) {
     }
 
     // Cleanup
-    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &ball.VBO);
+    glDeleteTextures(1, &ball.textureID);
     glDeleteProgram(shaderProgram);
     SDL_GL_DeleteContext(glContext);
     SDL_DestroyWindow(window);
