@@ -1,21 +1,21 @@
 # Variables
 CC = gcc
 CFLAGS = -Wall -g
+# SDL2, SDL_image, and OpenGL libraries
 LIBS = -lSDL2 -lSDL2_image -lGL -lGLEW -lm
-SRC = main.c
-TARGET = brickout
 
-# Default target
-all: $(TARGET)
+# Source files
+SRCS = main.c utils.c init.c
 
-# Compile the project
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(LIBS)
+# Executable output
+OUT = brickout
 
-# Clean the build files
+# Build rules
+all: $(OUT)
+
+$(OUT): $(SRCS)
+	$(CC) $(CFLAGS) -o $(OUT) $(SRCS) $(LIBS)
+
+# Clean up build files
 clean:
-	rm -f $(TARGET)
-
-# Run the project
-run: $(TARGET)
-	./$(TARGET)
+	rm -f $(OUT)
