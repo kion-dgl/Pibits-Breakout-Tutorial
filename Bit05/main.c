@@ -22,22 +22,37 @@ int main(int argc, char* argv[]) {
     }
 
     // Initialize ball (vertices, VBO, and texture)
+    // Initialize ball (vertices, VBO, and texture)
     Ball ball;
     initBall(&ball, shaderProgram);
 
-    // Set up position attribute
+    // Bind ball VBO and set up vertex attributes
+    glBindBuffer(GL_ARRAY_BUFFER, ball.VBO);
+
+    // Set up position attribute for ball
     GLint positionAttrib = glGetAttribLocation(shaderProgram, "position");
     glEnableVertexAttribArray(positionAttrib);
     glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
 
-    // Set up texture coordinate attribute
+    // Set up texture coordinate attribute for ball
     GLint texCoordAttrib = glGetAttribLocation(shaderProgram, "texCoord");
     glEnableVertexAttribArray(texCoordAttrib);
     glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
+    // Now do the same for the paddle
     Paddle paddle;
     initPaddle(&paddle, shaderProgram);
 
+    // Bind paddle VBO and set up vertex attributes
+    glBindBuffer(GL_ARRAY_BUFFER, paddle.VBO);
+
+    // Set up position attribute for paddle
+    glEnableVertexAttribArray(positionAttrib);  // You can reuse the positionAttrib location
+    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+
+    // Set up texture coordinate attribute for paddle
+    glEnableVertexAttribArray(texCoordAttrib);  // You can reuse the texCoordAttrib location
+    glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
 
     // Main loop
@@ -85,8 +100,17 @@ int main(int argc, char* argv[]) {
         // Pass the model matrix to the shader
         glUniformMatrix4fv(modelUniform, 1, GL_FALSE, modelMatrix);
 
-        // Inside the main loop, before drawing
+        // Render ball
         glBindBuffer(GL_ARRAY_BUFFER, ball.VBO);
+
+        // Set vertex attributes for ball
+        glEnableVertexAttribArray(positionAttrib);
+        glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+
+        glEnableVertexAttribArray(texCoordAttrib);
+        glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+
+        // Draw the ball
         glBindTexture(GL_TEXTURE_2D, ball.textureID);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -94,7 +118,18 @@ int main(int argc, char* argv[]) {
         // Update paddle's model matrix and draw it
         createTranslationMatrix(modelMatrix, paddle.x, paddle.y);
         glUniformMatrix4fv(modelUniform, 1, GL_FALSE, modelMatrix);
+
+        // Render paddle
         glBindBuffer(GL_ARRAY_BUFFER, paddle.VBO);
+
+        // Set vertex attributes for paddle
+        glEnableVertexAttribArray(positionAttrib);
+        glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+
+        glEnableVertexAttribArray(texCoordAttrib);
+        glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+
+        // Draw the paddle
         glBindTexture(GL_TEXTURE_2D, paddle.textureID);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
