@@ -55,7 +55,7 @@ int initializeSDLAndOpenGL(SDL_Window** window, SDL_GLContext* glContext, GLuint
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 
     // Create an 800x480 window
-    *window = SDL_CreateWindow("Brickout - Pibit",
+    *window = SDL_CreateWindow("Ball Bounce",
                                SDL_WINDOWPOS_CENTERED,
                                SDL_WINDOWPOS_CENTERED,
                                800, 480,
