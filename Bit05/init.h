@@ -23,9 +23,8 @@ typedef struct {
     float speed;        // Paddle movement speed
 } Paddle;
 
-
+void initPaddle(Paddle* paddle, GLuint shaderProgram);
 int initializeSDLAndOpenGL(SDL_Window** window, SDL_GLContext* glContext, GLuint* shaderProgram);
 void initBall(Ball* ball, GLuint shaderProgram);
-void initPaddle(Paddle* paddle, GLuint shaderProgram);
 
 #endif // INIT_H

@@ -25,8 +25,20 @@ int main(int argc, char* argv[]) {
     Ball ball;
     initBall(&ball, shaderProgram);
 
+    // Set up position attribute
+    GLint positionAttrib = glGetAttribLocation(shaderProgram, "position");
+    glEnableVertexAttribArray(positionAttrib);
+    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+
+    // Set up texture coordinate attribute
+    GLint texCoordAttrib = glGetAttribLocation(shaderProgram, "texCoord");
+    glEnableVertexAttribArray(texCoordAttrib);
+    glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+
     Paddle paddle;
     initPaddle(&paddle, shaderProgram);
+
+
 
     // Main loop
     int running = 1;
@@ -48,6 +60,8 @@ int main(int argc, char* argv[]) {
             }
         }
 
+        glClear(GL_COLOR_BUFFER_BIT);
+
         // Update ball position based on velocity
         ball.x += ball.vx * deltaTime;
         ball.y += ball.vy * deltaTime;
@@ -60,25 +74,29 @@ int main(int argc, char* argv[]) {
             ball.vy = -ball.vy;  // Reverse vertical direction
         }
 
-        glClear(GL_COLOR_BUFFER_BIT);
 
         // Inside the main loop
         float modelMatrix[16];
         createTranslationMatrix(modelMatrix, ball.x, ball.y);
+
+        // Get the location of the model matrix uniform in the shader
         GLint modelUniform = glGetUniformLocation(shaderProgram, "model");
+
+        // Pass the model matrix to the shader
         glUniformMatrix4fv(modelUniform, 1, GL_FALSE, modelMatrix);
 
-        glBindBuffer(GL_ARRAY_BUFFER, ball.VBO);  // Bind the ball's VBO
-        glBindTexture(GL_TEXTURE_2D, ball.textureID);  // Bind the ball's texture
-        glDrawArrays(GL_TRIANGLES, 0, 6);  // Draw the ball
+        // Inside the main loop, before drawing
+        glBindBuffer(GL_ARRAY_BUFFER, ball.VBO);
+        glBindTexture(GL_TEXTURE_2D, ball.textureID);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // Update and draw the paddle
+
+        // Update paddle's model matrix and draw it
         createTranslationMatrix(modelMatrix, paddle.x, paddle.y);
         glUniformMatrix4fv(modelUniform, 1, GL_FALSE, modelMatrix);
-
-        glBindBuffer(GL_ARRAY_BUFFER, paddle.VBO);  // Bind the paddle's VBO
-        glBindTexture(GL_TEXTURE_2D, paddle.textureID);  // Bind the paddle's texture (optional)
-        glDrawArrays(GL_TRIANGLES, 0, 6);  // Draw the paddle
+        glBindBuffer(GL_ARRAY_BUFFER, paddle.VBO);
+        glBindTexture(GL_TEXTURE_2D, paddle.textureID);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // Swap the buffers (double buffering)
         SDL_GL_SwapWindow(window);

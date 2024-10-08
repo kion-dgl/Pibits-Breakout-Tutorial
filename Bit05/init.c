@@ -2,6 +2,36 @@
 #include "utils.h"  // Include utils.h for createShaderProgram
 #include <stdio.h>
 
+void initPaddle(Paddle* paddle, GLuint shaderProgram) {
+    paddle->width = 100.0f;   // Paddle width
+    paddle->height = 20.0f;   // Paddle height
+    paddle->x = 400.0f;       // Start in the middle of the screen (X position)
+    paddle->y = 440.0f;       // Near the bottom of the screen (Y position)
+    paddle->speed = 300.0f;   // Movement speed in pixels per second
+
+    // Paddle vertices (a rectangle)
+    GLfloat vertices[] = {
+        // Position (X, Y, Z)         // Texture coordinates (U, V)
+        -paddle->width / 2,  paddle->height / 2, 0.0f,   0.0f, 1.0f,  // Top-left
+        -paddle->width / 2, -paddle->height / 2, 0.0f,   0.0f, 0.0f,  // Bottom-left
+         paddle->width / 2, -paddle->height / 2, 0.0f,   1.0f, 0.0f,  // Bottom-right
+
+        -paddle->width / 2,  paddle->height / 2, 0.0f,   0.0f, 1.0f,  // Top-left
+         paddle->width / 2, -paddle->height / 2, 0.0f,   1.0f, 0.0f,  // Bottom-right
+         paddle->width / 2,  paddle->height / 2, 0.0f,   1.0f, 1.0f   // Top-right
+    };
+
+    // Generate and bind the VBO
+    glGenBuffers(1, &paddle->VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, paddle->VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // Optional: Load paddle texture if you want
+    const char* textureFilePath = "paddle.png";
+    paddle->textureID = loadTexture(textureFilePath);
+}
+
+
 void initBall(Ball* ball, GLuint shaderProgram) {
     ball->radius = 15.0f;
     ball->x = 400.0f;   // Start in the middle of the window (800 / 2)
@@ -30,54 +60,6 @@ void initBall(Ball* ball, GLuint shaderProgram) {
     const char* textureFilePath = "ball.png";
     ball->textureID = loadTexture(textureFilePath);
 
-    // Set up position attribute
-    GLint positionAttrib = glGetAttribLocation(shaderProgram, "position");
-    glEnableVertexAttribArray(positionAttrib);
-    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
-
-    // Set up texture coordinate attribute
-    GLint texCoordAttrib = glGetAttribLocation(shaderProgram, "texCoord");
-    glEnableVertexAttribArray(texCoordAttrib);
-    glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
-}
-
-void initPaddle(Paddle* paddle, GLuint shaderProgram) {
-    paddle->width = 100.0f;   // Paddle width
-    paddle->height = 20.0f;   // Paddle height
-    paddle->x = 400.0f;       // Start in the middle of the screen (X position)
-    paddle->y = 40.0f;       // Near the bottom of the screen (Y position)
-    paddle->speed = 300.0f;   // Movement speed in pixels per second
-
-    // Paddle vertices (a rectangle)
-    GLfloat vertices[] = {
-        // Position (X, Y, Z)         // Texture coordinates (U, V)
-        -paddle->width / 2,  paddle->height / 2, 0.0f,   0.0f, 1.0f,  // Top-left
-        -paddle->width / 2, -paddle->height / 2, 0.0f,   0.0f, 0.0f,  // Bottom-left
-         paddle->width / 2, -paddle->height / 2, 0.0f,   1.0f, 0.0f,  // Bottom-right
-
-        -paddle->width / 2,  paddle->height / 2, 0.0f,   0.0f, 1.0f,  // Top-left
-         paddle->width / 2, -paddle->height / 2, 0.0f,   1.0f, 0.0f,  // Bottom-right
-         paddle->width / 2,  paddle->height / 2, 0.0f,   1.0f, 1.0f   // Top-right
-    };
-
-    // Generate and bind the VBO
-    glGenBuffers(1, &paddle->VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, paddle->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Set up position attribute
-    GLint positionAttrib = glGetAttribLocation(shaderProgram, "position");
-    glEnableVertexAttribArray(positionAttrib);
-    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
-
-    // Set up texture coordinate attribute
-    GLint texCoordAttrib = glGetAttribLocation(shaderProgram, "texCoord");
-    glEnableVertexAttribArray(texCoordAttrib);
-    glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
-
-    // Optional: Load paddle texture if you want
-    const char* textureFilePath = "paddle.png";
-    paddle->textureID = loadTexture(textureFilePath);
 }
 
 
