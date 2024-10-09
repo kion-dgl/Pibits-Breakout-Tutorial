@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
     const float brickWidth = 80.0f;  // Assuming window width of 800
     const float brickHeight = 20.0f;
     Brick bricks[rows * cols];
-    initBricks(bricks, rows, cols, brickWidth, brickHeight );
+    initBricks(bricks, cols, rows, brickWidth, brickHeight );
 
 
     GLfloat brickVertices[] = {
