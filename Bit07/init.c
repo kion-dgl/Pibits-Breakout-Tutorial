@@ -68,26 +68,28 @@ void initBricks(Brick* bricks, int cols, int rows, float brickWidth, float brick
     GLuint blueTexture = loadTexture("brick-blue.png");
     GLuint yellowTexture = loadTexture("brick-yellow.png");
 
-    const float paddingX = 10.0f;  // Horizontal padding
+   //  const float paddingX = 10.0f;  // Horizontal padding
     const float paddingY = 5.0f;   // Vertical padding
 
     // Calculate the total width and height of a single brick including padding
-    const float totalBrickWidth = brickWidth + paddingX;
+    // const float totalBrickWidth = brickWidth*3 + paddingX;
     const float totalBrickHeight = brickHeight + paddingY;
 
     // Calculate the starting X and Y positions to center the grid
-    float startX = (800.0f - (cols * totalBrickWidth - paddingX)) / 2.0f;  // Center horizontally
+    float startX = 30.0f;  // Center horizontally
     float startY = 480.0f - 50.0f;  // Start near the top of the window
 
     int brickIndex = 0;
     for (int row = 0; row < rows; row++) {
+        // startX = 4.0f;
         for (int col = 0; col < cols; col++) {
             int index = row * cols + col;
-            bricks[index].x = startX + col * totalBrickWidth;  // X position with padding
+            bricks[index].x = startX + brickWidth;  // X position with padding
             bricks[index].y = startY - row * totalBrickHeight;  // Y position with padding (top-down)
             bricks[index].width = brickWidth;
             bricks[index].height = brickHeight;
             bricks[index].isActive = 1;
+            startX += 90.0f;
 
             // Assign texture based on row (alternating every two rows)
             if (row < 2) {

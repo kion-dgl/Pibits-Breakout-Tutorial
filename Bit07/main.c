@@ -72,23 +72,29 @@ int main(int argc, char* argv[]) {
     glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
 
-    const int rows = 6;
-    const int cols = 10; // Number of bricks per row
-    const float brickWidth = 80.0f;  // Assuming window width of 800
+    const int rows = 1;
+    const int cols = 4; // Number of bricks per row
+    const float brickWidth = 45.0f;  // Assuming window width of 800
     const float brickHeight = 20.0f;
     Brick bricks[rows * cols];
     initBricks(bricks, cols, rows, brickWidth, brickHeight );
 
 
-    GLfloat brickVertices[] = {
-        // Positions                             // Texture Coords
-        0.0f,          0.0f, 0.0f,               0.0f, 0.0f,  // Bottom-left
-        brickWidth,    0.0f, 0.0f,               1.0f, 0.0f,  // Bottom-right
-        brickWidth,    brickHeight, 0.0f,        1.0f, 1.0f,  // Top-right
-        brickWidth,    brickHeight, 0.0f,        1.0f, 1.0f,  // Top-right
-        0.0f,          brickHeight, 0.0f,        0.0f, 1.0f,  // Top-left
-        0.0f,          0.0f, 0.0f,               0.0f, 0.0f   // Bottom-left
+    const float halfBrickWidth = brickWidth / 2.0f;
+    const float halfBrickHeight = brickHeight / 2.0f;
+
+    float brickVertices[] = {
+        // First triangle
+        -halfBrickWidth, -halfBrickHeight, 0.0f,  0.0f, 0.0f,  // Bottom-left
+         halfBrickWidth, -halfBrickHeight, 0.0f,  1.0f, 0.0f,  // Bottom-right
+         halfBrickWidth,  halfBrickHeight, 0.0f,  1.0f, 1.0f,  // Top-right
+
+        // Second triangle
+        -halfBrickWidth, -halfBrickHeight, 0.0f,  0.0f, 0.0f,  // Bottom-left
+         halfBrickWidth,  halfBrickHeight, 0.0f,  1.0f, 1.0f,  // Top-right
+        -halfBrickWidth,  halfBrickHeight, 0.0f,  0.0f, 1.0f   // Top-left
     };
+
 
     GLuint brickVBO;
     glGenBuffers(1, &brickVBO);
@@ -96,6 +102,16 @@ int main(int argc, char* argv[]) {
     glBufferData(GL_ARRAY_BUFFER, sizeof(brickVertices), brickVertices, GL_STATIC_DRAW);
 
 
+    // Bind paddle VBO and set up vertex attributes
+    glBindBuffer(GL_ARRAY_BUFFER, brickVBO);
+
+    // Set up position attribute for paddle
+    glEnableVertexAttribArray(positionAttrib);  // You can reuse the positionAttrib location
+    glVertexAttribPointer(positionAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+
+    // Set up texture coordinate attribute for paddle
+    glEnableVertexAttribArray(texCoordAttrib);  // You can reuse the texCoordAttrib location
+    glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
 
     // Main loop
