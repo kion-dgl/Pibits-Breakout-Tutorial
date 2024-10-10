@@ -72,13 +72,11 @@ int main(int argc, char* argv[]) {
     glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
 
-    const int rows = 1;
-    const int cols = 4; // Number of bricks per row
-    const float brickWidth = 45.0f;  // Assuming window width of 800
-    const float brickHeight = 20.0f;
+    const int rows = 6;
+    const int cols = 10; // Number of bricks per row
+    const float brickWidth = 70.0f;  // Assuming window width of 800
+    const float brickHeight = 34.0f;
     Brick bricks[rows * cols];
-
-
 
     const float halfBrickWidth = brickWidth / 2.0f;
     const float halfBrickHeight = brickHeight / 2.0f;
