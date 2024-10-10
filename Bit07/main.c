@@ -28,6 +28,13 @@ void drawBrick(Brick brick, GLuint shaderProgram, GLint modelUniform) {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
+int checkCollision (Ball ball, Paddle paddle) {
+    return ball.x < paddle.x + paddle.width &&
+            ball.x + ball.radius > paddle.x &&
+            ball.y < paddle.y + paddle.height &&
+            ball.y + ball.radius > paddle.y;
+}
+
 int main(int argc, char* argv[]) {
     SDL_Window* window = NULL;
     SDL_GLContext glContext;
@@ -115,18 +122,18 @@ int main(int argc, char* argv[]) {
     // Main loop
     int running = 1;
     SDL_Event event;
-    // Uint32 previousTime = 0;
-    // Uint32 currentTime = 0;
-    // float deltaTime = 0.0f;
+    Uint32 previousTime = 0;
+    Uint32 currentTime = 0;
+    float deltaTime = 0.0f;
     float modelMatrix[16];
     GLint modelUniform = glGetUniformLocation(shaderProgram, "model");
 
     // Main loop
     while (running) {
         // Calculate delta time
-        // currentTime = SDL_GetTicks();
-        // deltaTime = (currentTime - previousTime) / 10.0f;
-        // previousTime = currentTime;
+        currentTime = SDL_GetTicks();
+        deltaTime = (currentTime - previousTime) / 10.0f;
+        previousTime = currentTime;
 
         // Event handling
         while (SDL_PollEvent(&event)) {
@@ -136,6 +143,39 @@ int main(int argc, char* argv[]) {
         }
 
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // Update ball position based on velocity
+        ball.x += ball.vx * deltaTime;
+        ball.y += ball.vy * deltaTime;
+
+        // Collision with window edges (bounce back)
+        if (ball.x + ball.radius > 800 || ball.x - ball.radius < 0) {
+            ball.vx = -ball.vx;  // Reverse horizontal direction
+        }
+        if (ball.y + ball.radius > 480 || ball.y - ball.radius < 0) {
+            ball.vy = -ball.vy;  // Reverse vertical direction
+        }
+
+        // Move the paddle based on user input
+        const Uint8* state = SDL_GetKeyboardState(NULL);
+        if (state[SDL_SCANCODE_LEFT]) {
+            paddle.x -= paddle.speed * deltaTime;  // Move left
+        }
+        if (state[SDL_SCANCODE_RIGHT]) {
+            paddle.x += paddle.speed * deltaTime;  // Move right
+        }
+
+        // Keep the paddle within the window bounds
+        if (paddle.x - paddle.width / 2 < 0) {
+            paddle.x = paddle.width / 2;
+        }
+        if (paddle.x + paddle.width / 2 > 800) {
+            paddle.x = 800 - paddle.width / 2;
+        }
+
+        if (checkCollision(ball, paddle)) {
+            ball.vy = -ball.vy;
+        }
 
         // 1. Render Ball
         createTranslationMatrix(modelMatrix, ball.x, ball.y);
