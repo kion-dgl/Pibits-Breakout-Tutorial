@@ -54,6 +54,7 @@ int score = 0;
 int consecutiveHits = 0;
 Uint32 countdownStartTime = 0;
 const int COUNTDOWN_DURATION = 3000; // 3 seconds in milliseconds
+bool firstGame = true;
 
 // Function declarations
 bool initSDL(void);
@@ -168,16 +169,21 @@ void initializeGame(void) {
     lives = INITIAL_LIVES;
     score = 0;
     consecutiveHits = 0;
-    gameStarted = false;
     gameOver = false;
     gameWon = false;
+
+    if (firstGame) {
+        gameStarted = false;
+    } else {
+        gameStarted = true;
+        countdownStartTime = SDL_GetTicks();
+    }
 
     // Initialize paddle
     paddle.x = WINDOW_WIDTH / 2 - PADDLE_WIDTH / 2;
     paddle.y = WINDOW_HEIGHT - 40;
     paddle.width = PADDLE_WIDTH;
     paddle.height = PADDLE_HEIGHT;
-    paddle.texture = loadTexture("paddle.png");
 
     // Initialize ball position but don't set velocity yet
     ball.x = WINDOW_WIDTH / 2;
@@ -185,10 +191,8 @@ void initializeGame(void) {
     ball.dx = 0;
     ball.dy = 0;
     ball.size = BALL_SIZE;
-    ball.texture = loadTexture("ball.png");
 
     // Initialize bricks
-    GLuint brickTexture = loadTexture("brick.png");
     for (int row = 0; row < NUM_BRICK_ROWS; row++) {
         for (int col = 0; col < NUM_BRICK_COLUMNS; col++) {
             bricks[row][col].x = col * BRICK_WIDTH;
@@ -196,9 +200,10 @@ void initializeGame(void) {
             bricks[row][col].width = BRICK_WIDTH;
             bricks[row][col].height = BRICK_HEIGHT;
             bricks[row][col].active = true;
-            bricks[row][col].texture = brickTexture;
         }
     }
+
+    printf("Game initialization complete.\n");
 }
 
 void renderTexturedQuad(float x, float y, float width, float height, GLuint texture) {
@@ -234,8 +239,11 @@ void handleInput(void) {
                     if (!gameStarted) {
                         gameStarted = true;
                         countdownStartTime = SDL_GetTicks();
+                        printf("Game started. Countdown begins.\n");
                     } else if (gameOver || gameWon) {
+                        firstGame = false;
                         initializeGame();
+                        printf("Game restarted.\n");
                     }
                     break;
             }
@@ -278,6 +286,7 @@ void updateGame(void) {
     Uint32 currentTime = SDL_GetTicks();
     if (currentTime - countdownStartTime < COUNTDOWN_DURATION) {
         // Countdown is still going, don't update ball position
+        printf("Countdown: %d\n", (COUNTDOWN_DURATION - (currentTime - countdownStartTime)) / 1000 + 1);
         return;
     }
 
@@ -289,11 +298,13 @@ void updateGame(void) {
         if (fabs(ball.dx) < BALL_SPEED / 2) {
             ball.dx = (ball.dx > 0) ? BALL_SPEED / 2 : -BALL_SPEED / 2;
         }
+        printf("Ball velocity initialized: dx=%f, dy=%f\n", ball.dx, ball.dy);
     }
 
     // Update ball position
     ball.x += ball.dx;
     ball.y += ball.dy;
+    printf("Ball position: x=%f, y=%f\n", ball.x, ball.y);
 
     // Ball collision with walls
     if (ball.x - ball.size < 0) {
@@ -312,8 +323,10 @@ void updateGame(void) {
     // Ball out of bounds (bottom)
     if (ball.y + ball.size > WINDOW_HEIGHT) {
         lives--;
+        printf("Life lost. Remaining lives: %d\n", lives);
         if (lives <= 0) {
             gameOver = true;
+            printf("Game Over\n");
         } else {
             // Reset ball position with random x velocity
             ball.x = WINDOW_WIDTH / 2;
@@ -328,6 +341,7 @@ void updateGame(void) {
 
             // Reset paddle position
             paddle.x = WINDOW_WIDTH / 2 - PADDLE_WIDTH / 2;
+            printf("Ball reset: dx=%f, dy=%f\n", ball.dx, ball.dy);
         }
     }
 
@@ -351,6 +365,7 @@ void updateGame(void) {
 
         // Reset consecutive hits when ball touches paddle
         consecutiveHits = 0;
+        printf("Ball hit paddle. New velocity: dx=%f, dy=%f\n", ball.dx, ball.dy);
     }
 
     // Ball collision with bricks
@@ -365,6 +380,7 @@ void updateGame(void) {
                 // Update score
                 score += 10 + (consecutiveHits * 5);
                 consecutiveHits++;
+                printf("Brick hit. Score: %d, Consecutive hits: %d\n", score, consecutiveHits);
 
                 // Determine which side of the brick was hit
                 float brickCenterX = bricks[row][col].x + bricks[row][col].width / 2;
@@ -379,6 +395,7 @@ void updateGame(void) {
                     ball.dy = -ball.dy;
                 }
 
+                printf("Ball deflected. New velocity: dx=%f, dy=%f\n", ball.dx, ball.dy);
                 break;
             }
         }
@@ -388,6 +405,7 @@ void updateGame(void) {
     // Check for win condition
     if (allBricksBroken()) {
         gameWon = true;
+        printf("Game Won!\n");
     }
 }
 
@@ -435,9 +453,10 @@ void renderGame(void) {
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
-    if (!gameStarted) {
-        // Render start screen
+    if (!gameStarted && firstGame) {
+        // Render start screen only for the first game
         renderTexturedQuad(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, startScreenTexture);
+        printf("Rendering start screen\n");
     } else if (!gameOver && !gameWon) {
         // Render background
         renderTexturedQuad(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, backgroundTexture);
@@ -447,8 +466,8 @@ void renderGame(void) {
             for (int col = 0; col < NUM_BRICK_COLUMNS; col++) {
                 if (bricks[row][col].active) {
                     renderTexturedQuad(bricks[row][col].x, bricks[row][col].y,
-                                        bricks[row][col].width, bricks[row][col].height,
-                                        bricks[row][col].texture);
+                                     bricks[row][col].width, bricks[row][col].height,
+                                     bricks[row][col].texture);
                 }
             }
         }
@@ -458,12 +477,12 @@ void renderGame(void) {
 
         // Render ball
         renderTexturedQuad(ball.x - ball.size, ball.y - ball.size,
-                            ball.size * 2, ball.size * 2, ball.texture);
+                          ball.size * 2, ball.size * 2, ball.texture);
 
         // Render remaining lives in top right corner
         for (int i = 0; i < lives; i++) {
             renderTexturedQuad(WINDOW_WIDTH - 40 - (i * 35), 10,
-                                BALL_SIZE * 2, BALL_SIZE * 2, ball.texture);
+                             BALL_SIZE * 2, BALL_SIZE * 2, ball.texture);
         }
 
         // Render score
@@ -474,14 +493,17 @@ void renderGame(void) {
         if (currentTime - countdownStartTime < COUNTDOWN_DURATION) {
             int remainingTime = (COUNTDOWN_DURATION - (currentTime - countdownStartTime)) / 1000 + 1;
             renderCountdown(remainingTime);
+            printf("Rendering countdown: %d\n", remainingTime);
         }
     } else if (gameOver) {
         // Render game over screen
         renderTexturedQuad(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, gameOverTexture);
+        printf("Rendering game over screen\n");
     } else if (gameWon) {
         // Render win screen
         renderTexturedQuad(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, winTexture);
         renderScore();
+        printf("Rendering win screen\n");
     }
 
     SDL_GL_SwapWindow(window);
@@ -527,13 +549,25 @@ int main(int argc, char* argv[]) {
     winTexture = loadTexture("youwin.png");
     fontTexture = loadTexture("font.png");
     startScreenTexture = loadTexture("startscreen.png");
+    paddle.texture = loadTexture("paddle.png");
+    ball.texture = loadTexture("ball.png");
+    GLuint brickTexture = loadTexture("brick.png");
 
-    if (!backgroundTexture || !gameOverTexture || !winTexture || !fontTexture || !startScreenTexture) {
+    if (!backgroundTexture || !gameOverTexture || !winTexture || !fontTexture ||
+        !startScreenTexture || !paddle.texture || !ball.texture || !brickTexture) {
         printf("Failed to load textures. Exiting...\n");
         cleanup();
         return 1;
     }
 
+    // Set brick textures
+    for (int row = 0; row < NUM_BRICK_ROWS; row++) {
+        for (int col = 0; col < NUM_BRICK_COLUMNS; col++) {
+            bricks[row][col].texture = brickTexture;
+        }
+    }
+
+    firstGame = true;
     initializeGame();
     printf("Game initialized, entering main loop...\n");
 
