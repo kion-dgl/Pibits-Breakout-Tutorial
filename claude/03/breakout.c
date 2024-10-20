@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
+#include <time.h>
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 480
@@ -138,8 +139,15 @@ bool initSDL(void) {
     return true;
 }
 
+float randomFloat(float min, float max) {
+    return min + (rand() / (float)RAND_MAX) * (max - min);
+}
+
 void initializeGame(void) {
     printf("Initializing game objects...\n");
+
+    // Initialize random seed
+    srand(time(NULL));
 
     // Initialize lives
     lives = INITIAL_LIVES;
@@ -152,13 +160,18 @@ void initializeGame(void) {
     paddle.height = PADDLE_HEIGHT;
     paddle.texture = loadTexture("paddle.png");
 
-    // Initialize ball
+    // Initialize ball with random x velocity
     ball.x = WINDOW_WIDTH / 2;
     ball.y = WINDOW_HEIGHT / 2;
-    ball.dx = BALL_SPEED;
+    ball.dx = randomFloat(-BALL_SPEED, BALL_SPEED);
     ball.dy = -BALL_SPEED;
     ball.size = BALL_SIZE;
     ball.texture = loadTexture("ball.png");
+
+    // Ensure the ball is not moving too slowly horizontally
+    if (fabs(ball.dx) < BALL_SPEED / 2) {
+        ball.dx = (ball.dx > 0) ? BALL_SPEED / 2 : -BALL_SPEED / 2;
+    }
 
     // Initialize bricks
     GLuint brickTexture = loadTexture("brick.png");
@@ -261,7 +274,7 @@ void updateGame(void) {
             // Reset ball position
             ball.x = WINDOW_WIDTH / 2;
             ball.y = WINDOW_HEIGHT / 2;
-            ball.dx = BALL_SPEED;
+            ball.dx = randomFloat(-BALL_SPEED, BALL_SPEED);
             ball.dy = -BALL_SPEED;
 
             // Reset paddle position
