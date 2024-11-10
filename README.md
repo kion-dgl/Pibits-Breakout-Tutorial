@@ -72,6 +72,12 @@ Each section of the tutorial is broken down into clearly labeled directories, so
 
 Feel free to open issues or submit pull requests if you find any bugs, have suggestions for improvements, or want to add your own spin to the project!
 
+##
+
+```math
+\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)
+```
+
 ## 📝 License
 
 This project is licensed under the MIT License – see the LICENSE file for details.
