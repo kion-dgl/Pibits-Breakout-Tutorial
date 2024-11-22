@@ -18,6 +18,7 @@
 typedef enum {
     GAME_STATE_START_SCREEN,
     GAME_STATE_PLAYING,
+    GAME_STATE_WIN_SCREEN,
     GAME_STATE_GAME_OVER
 } GameState;
 
@@ -46,13 +47,11 @@ typedef struct {
     Mix_Chunk* paddle_hit;
 } AudioAssets;
 
+// Global Variables
 Paddle paddle;
 Ball ball;
 Brick bricks[BRICK_ROWS][BRICK_COLS];
 AudioAssets audio = {NULL, NULL, NULL};
-SDL_Texture* background_texture = NULL;
-SDL_Texture* startscreen_texture = NULL;
-SDL_Texture* start_text_texture = NULL;
 SDL_Window* win = NULL;
 SDL_Renderer* renderer = NULL;
 TTF_Font* font = NULL;
@@ -61,6 +60,15 @@ bool running = true;
 bool move_left = false;
 bool move_right = false;
 
+// Textures
+SDL_Texture* background_texture = NULL;
+SDL_Texture* startscreen_texture = NULL;
+SDL_Texture* start_text_texture = NULL;
+SDL_Texture* gameover_texture = NULL;
+SDL_Texture* youwin_texture = NULL;
+SDL_Texture* restart_text_texture = NULL;
+SDL_Texture* quit_text_texture = NULL;
+
 // Initialize audio
 bool init_audio() {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
@@ -68,14 +76,12 @@ bool init_audio() {
         return false;
     }
 
-    // Load background music
     audio.background_music = Mix_LoadMUS("sound/background_music.ogg");
     if (audio.background_music == NULL) {
         printf("Failed to load background music: %s\n", Mix_GetError());
         return false;
     }
 
-    // Load sound effects
     audio.brick_hit = Mix_LoadWAV("sound/brick_hit.ogg");
     if (audio.brick_hit == NULL) {
         printf("Failed to load brick hit sound: %s\n", Mix_GetError());
@@ -144,18 +150,29 @@ SDL_Texture* create_text_texture(SDL_Renderer* renderer, TTF_Font* font, const c
 
 // Initialize game objects and load textures
 bool init_game_objects() {
-    // Load start screen
+    // Load all screen textures
     startscreen_texture = load_texture(renderer, "sprites/startscreen.png");
     if (startscreen_texture == NULL) return false;
 
-    // Load background
     background_texture = load_texture(renderer, "sprites/background.png");
     if (background_texture == NULL) return false;
 
-    // Create "Start" text
+    gameover_texture = load_texture(renderer, "sprites/gameover.png");
+    if (gameover_texture == NULL) return false;
+
+    youwin_texture = load_texture(renderer, "sprites/youwin.png");
+    if (youwin_texture == NULL) return false;
+
+    // Create text textures
     SDL_Color white = {255, 255, 255, 255};
-    start_text_texture = create_text_texture(renderer, font, "Start", white);
+    start_text_texture = create_text_texture(renderer, font, "Press 9 to Start", white);
     if (start_text_texture == NULL) return false;
+
+    restart_text_texture = create_text_texture(renderer, font, "Press R to Restart", white);
+    if (restart_text_texture == NULL) return false;
+
+    quit_text_texture = create_text_texture(renderer, font, "Press Q to Quit", white);
+    if (quit_text_texture == NULL) return false;
 
     // Initialize paddle
     paddle = (Paddle){
@@ -165,7 +182,6 @@ bool init_game_objects() {
         .height = PADDLE_HEIGHT,
         .texture = load_texture(renderer, "sprites/paddle.png")
     };
-
     if (paddle.texture == NULL) return false;
 
     // Initialize ball
@@ -177,7 +193,6 @@ bool init_game_objects() {
         .size = BALL_SIZE,
         .texture = load_texture(renderer, "sprites/ball.png")
     };
-
     if (ball.texture == NULL) return false;
 
     // Initialize bricks
@@ -202,10 +217,25 @@ void cleanup_game_objects() {
     SDL_DestroyTexture(background_texture);
     SDL_DestroyTexture(startscreen_texture);
     SDL_DestroyTexture(start_text_texture);
+    SDL_DestroyTexture(gameover_texture);
+    SDL_DestroyTexture(youwin_texture);
+    SDL_DestroyTexture(restart_text_texture);
+    SDL_DestroyTexture(quit_text_texture);
 
     if (BRICK_ROWS > 0 && BRICK_COLS > 0) {
         SDL_DestroyTexture(bricks[0][0].texture);
     }
+}
+
+bool check_all_bricks_destroyed() {
+    for (int i = 0; i < BRICK_ROWS; i++) {
+        for (int j = 0; j < BRICK_COLS; j++) {
+            if (!bricks[i][j].destroyed) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 void reset_game() {
@@ -244,6 +274,21 @@ void handle_start_screen_events(SDL_Event* e) {
     }
 }
 
+void handle_end_screen_events(SDL_Event* e) {
+    if (e->type == SDL_QUIT) {
+        running = false;
+    } else if (e->type == SDL_KEYDOWN) {
+        switch (e->key.keysym.sym) {
+            case SDLK_r:
+                reset_game();
+                break;
+            case SDLK_q:
+                running = false;
+                break;
+        }
+    }
+}
+
 void render_start_screen() {
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, startscreen_texture, NULL, NULL);
@@ -261,115 +306,168 @@ void render_start_screen() {
     SDL_RenderPresent(renderer);
 }
 
-void main_loop() {
-    SDL_Event e;
-
-    while (SDL_PollEvent(&e)) {
-        if (game_state == GAME_STATE_START_SCREEN) {
-            handle_start_screen_events(&e);
-        } else if (game_state == GAME_STATE_PLAYING) {
-            if (e.type == SDL_QUIT) {
-                running = false;
-            } else if (e.type == SDL_KEYDOWN) {
-                if (e.key.keysym.sym == SDLK_LEFT) {
-                    move_left = true;
-                } else if (e.key.keysym.sym == SDLK_RIGHT) {
-                    move_right = true;
-                }
-            } else if (e.type == SDL_KEYUP) {
-                if (e.key.keysym.sym == SDLK_LEFT) {
-                    move_left = false;
-                } else if (e.key.keysym.sym == SDLK_RIGHT) {
-                    move_right = false;
-                }
-            }
-        }
-    }
-
-    if (game_state == GAME_STATE_START_SCREEN) {
-        render_start_screen();
-        return;
-    }
-
-    // Update paddle position
-    if (move_left) {
-        paddle.x -= 10;
-    }
-    if (move_right) {
-        paddle.x += 10;
-    }
-
-    // Keep paddle within screen bounds
-    if (paddle.x < 0) paddle.x = 0;
-    if (paddle.x + paddle.width > SCREEN_WIDTH) paddle.x = SCREEN_WIDTH - paddle.width;
-
-    // Update ball position
-    ball.x += ball.dx;
-    ball.y += ball.dy;
-
-    // Ball collision with walls
-    if (ball.x <= 0 || ball.x + ball.size >= SCREEN_WIDTH) {
-        ball.dx = -ball.dx;
-    }
-    if (ball.y <= 0) {
-        ball.dy = -ball.dy;
-    }
-
-    // Ball collision with paddle
-    if (ball.y + ball.size >= paddle.y &&
-        ball.x + ball.size >= paddle.x &&
-        ball.x <= paddle.x + paddle.width) {
-        ball.dy = -ball.dy;
-        Mix_PlayChannel(-1, audio.paddle_hit, 0);
-    }
-
-    // Ball collision with bricks
-    for (int i = 0; i < BRICK_ROWS; i++) {
-        for (int j = 0; j < BRICK_COLS; j++) {
-            Brick* brick = &bricks[i][j];
-            if (!brick->destroyed &&
-                ball.x + ball.size > brick->x &&
-                ball.x < brick->x + BRICK_WIDTH &&
-                ball.y + ball.size > brick->y &&
-                ball.y < brick->y + BRICK_HEIGHT) {
-                brick->destroyed = true;
-                ball.dy = -ball.dy;
-                Mix_PlayChannel(-1, audio.brick_hit, 0);
-            }
-        }
-    }
-
-    // Ball falls below the screen
-    if (ball.y > SCREEN_HEIGHT) {
-        game_state = GAME_STATE_START_SCREEN;
-    }
-
-    // Render game
+void render_end_screen(bool is_win) {
     SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, background_texture, NULL, NULL);
 
-    // Draw bricks
-    for (int i = 0; i < BRICK_ROWS; i++) {
-        for (int j = 0; j < BRICK_COLS; j++) {
-            if (!bricks[i][j].destroyed) {
-                SDL_Rect brickRect = {bricks[i][j].x, bricks[i][j].y, BRICK_WIDTH, BRICK_HEIGHT};
-                SDL_RenderCopy(renderer, bricks[i][j].texture, NULL, &brickRect);
-            }
-        }
-    }
+    SDL_RenderCopy(renderer, is_win ? youwin_texture : gameover_texture, NULL, NULL);
 
-    // Draw paddle
-    SDL_Rect paddleRect = {paddle.x, paddle.y, paddle.width, paddle.height};
-    SDL_RenderCopy(renderer, paddle.texture, NULL, &paddleRect);
+    int text_width, text_height;
 
-    // Draw ball
-    SDL_Rect ballRect = {ball.x, ball.y, ball.size, ball.size};
-    SDL_RenderCopy(renderer, ball.texture, NULL, &ballRect);
+    SDL_QueryTexture(restart_text_texture, NULL, NULL, &text_width, &text_height);
+    SDL_Rect restart_rect = {
+        (SCREEN_WIDTH - text_width) / 2,
+        SCREEN_HEIGHT * 3/4,
+        text_width,
+        text_height
+    };
+    SDL_RenderCopy(renderer, restart_text_texture, NULL, &restart_rect);
+
+    SDL_QueryTexture(quit_text_texture, NULL, NULL, &text_width, &text_height);
+    SDL_Rect quit_rect = {
+        (SCREEN_WIDTH - text_width) / 2,
+        SCREEN_HEIGHT * 3/4 + text_height + 10,
+        text_width,
+        text_height
+    };
+    SDL_RenderCopy(renderer, quit_text_texture, NULL, &quit_rect);
 
     SDL_RenderPresent(renderer);
 }
 
-int main(int argc, char* argv[]) {
+void main_loop() {
+    SDL_Event e;
+
+    while (SDL_PollEvent(&e)) {
+        switch (game_state) {
+            case GAME_STATE_START_SCREEN:
+                handle_start_screen_events(&e);
+                break;
+            case GAME_STATE_PLAYING:
+                if (e.type == SDL_QUIT) {
+                    running = false;
+                } else if (e.type == SDL_KEYDOWN) {
+                    if (e.key.keysym.sym == SDLK_LEFT) {
+                        move_left = true;
+                    } else if (e.key.keysym.sym == SDLK_RIGHT) {
+                        move_right = true;
+                    }
+                } else if (e.type == SDL_KEYUP) {
+                    if (e.key.keysym.sym == SDLK_LEFT) {
+                        move_left = false;
+                    } else if (e.key.keysym.sym == SDLK_RIGHT) {
+                        move_right = false;
+                    }
+                }
+                break;
+            case GAME_STATE_WIN_SCREEN:
+            case GAME_STATE_GAME_OVER:
+                handle_end_screen_events(&e);
+                break;
+        }
+    }
+
+    switch (game_state) {
+        case GAME_STATE_START_SCREEN:
+            render_start_screen();
+            return;
+        case GAME_STATE_WIN_SCREEN:
+            render_end_screen(true);
+            return;
+        case GAME_STATE_GAME_OVER:
+            render_end_screen(false);
+            return;
+        default:
+            break;
+    }
+
+    // Game logic (only runs when playing)
+    if (game_state == GAME_STATE_PLAYING) {
+        // Update paddle position
+        if (move_left) {
+            paddle.x -= 10;
+        }
+        if (move_right) {
+            paddle.x += 10;
+        }
+
+        // Keep paddle within screen bounds
+        if (paddle.x < 0) paddle.x = 0;
+        if (paddle.x + paddle.width > SCREEN_WIDTH) paddle.x = SCREEN_WIDTH - paddle.width;
+
+        // Update ball position
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+
+        // Ball collision with walls
+        if (ball.x <= 0 || ball.x + ball.size >= SCREEN_WIDTH) {
+            ball.dx = -ball.dx;
+        }
+        if (ball.y <= 0) {
+            ball.dy = -ball.dy;
+        }
+        // Ball collision with paddle
+        if (ball.y + ball.size >= paddle.y &&
+            ball.x + ball.size >= paddle.x &&
+            ball.x <= paddle.x + paddle.width) {
+            ball.dy = -ball.dy;
+            Mix_PlayChannel(-1, audio.paddle_hit, 0);
+        }
+
+        // Ball collision with bricks
+        for (int i = 0; i < BRICK_ROWS; i++) {
+            for (int j = 0; j < BRICK_COLS; j++) {
+                Brick* brick = &bricks[i][j];
+                if (!brick->destroyed &&
+                    ball.x + ball.size > brick->x &&
+                    ball.x < brick->x + BRICK_WIDTH &&
+                    ball.y + ball.size > brick->y &&
+                    ball.y < brick->y + BRICK_HEIGHT) {
+                    brick->destroyed = true;
+                    ball.dy = -ball.dy;
+                    Mix_PlayChannel(-1, audio.brick_hit, 0);
+                }
+            }
+        }
+
+        // Check win condition
+        if (check_all_bricks_destroyed()) {
+            game_state = GAME_STATE_WIN_SCREEN;
+            return;
+        }
+
+        // Check lose condition
+        if (ball.y > SCREEN_HEIGHT) {
+            game_state = GAME_STATE_GAME_OVER;
+            return;
+        }
+
+        // Render game
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, background_texture, NULL, NULL);
+
+        // Draw bricks
+        for (int i = 0; i < BRICK_ROWS; i++) {
+            for (int j = 0; j < BRICK_COLS; j++) {
+                if (!bricks[i][j].destroyed) {
+                    SDL_Rect brickRect = {bricks[i][j].x, bricks[i][j].y, BRICK_WIDTH, BRICK_HEIGHT};
+                    SDL_RenderCopy(renderer, bricks[i][j].texture, NULL, &brickRect);
+                }
+            }
+        }
+
+        // Draw paddle
+        SDL_Rect paddleRect = {paddle.x, paddle.y, paddle.width, paddle.height};
+        SDL_RenderCopy(renderer, paddle.texture, NULL, &paddleRect);
+
+        // Draw ball
+        SDL_Rect ballRect = {ball.x, ball.y, ball.size, ball.size};
+        SDL_RenderCopy(renderer, ball.texture, NULL, &ballRect);
+
+        SDL_RenderPresent(renderer);
+    }
+}
+
+int main() {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         printf("SDL_Init Error: %s\n", SDL_GetError());
