@@ -43,27 +43,26 @@ void title_screen_render(TitleScreen* ts, SDL_Renderer* renderer) {
     }
     
     if (ts->texture_manager->logo.texture) {
-        int logo_width = 200;
+        int logo_width = 300;
         int logo_height = (ts->texture_manager->logo.height * logo_width) / ts->texture_manager->logo.width;
-        int logo_x = (WINDOW_WIDTH - logo_width) / 2;
-        int logo_y = 40;
+        int logo_x = 50;
+        int logo_y = 50;
         render_texture(renderer, ts->texture_manager->logo.texture, 
                       logo_x, logo_y, logo_width, logo_height);
     }
     
     if (ts->texture_manager->dashie.texture) {
-        int dashie_scale = 2;
-        int dashie_width = ts->texture_manager->dashie.width * dashie_scale;
-        int dashie_height = ts->texture_manager->dashie.height * dashie_scale;
-        int dashie_x = WINDOW_WIDTH - dashie_width - 20;
-        int dashie_y = WINDOW_HEIGHT - dashie_height - 20;
+        int dashie_width = ts->texture_manager->dashie.width;
+        int dashie_height = ts->texture_manager->dashie.height;
+        int dashie_x = WINDOW_WIDTH - dashie_width - 10;
+        int dashie_y = WINDOW_HEIGHT - dashie_height - 10;
         render_texture(renderer, ts->texture_manager->dashie.texture, 
                       dashie_x, dashie_y, dashie_width, dashie_height);
     }
     
     const char* menu_items[] = {"Start Game", "Quit Game"};
-    int menu_x = WINDOW_WIDTH - 250;
-    int menu_y = 250;
+    int menu_x = 50;
+    int menu_y = 300;
     SDL_Color white_color = {255, 255, 255, 255};
     SDL_Color yellow_color = {255, 255, 0, 255};
     
