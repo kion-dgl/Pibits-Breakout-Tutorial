@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pibits Breakout</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Pibits Breakout - Game Complete</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One:wght@400&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,10 +17,10 @@
         body {
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(45deg, #0faebc 25%, transparent 25%), 
-                        linear-gradient(-45deg, #0faebc 25%, transparent 25%), 
-                        linear-gradient(45deg, transparent 75%, #0faebc 75%), 
-                        linear-gradient(-45deg, transparent 75%, #0faebc 75%);
+            background: linear-gradient(45deg, #0faebc 25%, transparent 25%),
+                linear-gradient(-45deg, #0faebc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #0faebc 75%),
+                linear-gradient(-45deg, transparent 75%, #0faebc 75%);
             background-size: 4px 4px;
             background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
             background-color: #0faebc;
@@ -39,10 +41,189 @@
         .game-container {
             width: 1280px;
             height: 960px;
-            background-color: #2b3440;
             border: 4px solid #1a1f28;
             position: relative;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/background.png');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.8) contrast(0.9) saturate(0.7);
+            z-index: 1;
+        }
+
+        .dither-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 15%;
+            background: linear-gradient(180deg,
+                    rgba(255, 255, 0, 0.3) 0%,
+                    rgba(255, 255, 0, 0.2) 25%,
+                    rgba(255, 255, 0, 0.1) 50%,
+                    rgba(255, 255, 0, 0.05) 75%,
+                    transparent 100%);
+            background-image:
+                radial-gradient(circle at 25% 25%, transparent 2px, rgba(255, 255, 0, 0.1) 2px),
+                radial-gradient(circle at 75% 75%, transparent 2px, rgba(255, 255, 0, 0.1) 2px);
+            background-size: 8px 8px;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .dither-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 25%;
+            background: linear-gradient(0deg,
+                    rgba(255, 255, 0, 0.3) 0%,
+                    rgba(255, 255, 0, 0.2) 25%,
+                    rgba(255, 255, 0, 0.1) 50%,
+                    rgba(255, 255, 0, 0.05) 75%,
+                    transparent 100%);
+            background-image:
+                radial-gradient(circle at 25% 25%, transparent 2px, rgba(255, 255, 0, 0.1) 2px),
+                radial-gradient(circle at 75% 75%, transparent 2px, rgba(255, 255, 0, 0.1) 2px);
+            background-size: 8px 8px;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .game-title {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .complete-text {
+            font-family: 'Fredoka One', cursive;
+            font-size: 96px;
+            background: linear-gradient(180deg, #ffdd00 0%, #ffaa00 50%, #ff6600 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+        }
+
+        .complete-text::before {
+            content: "Complete!";
+            font-family: 'Fredoka One', cursive;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            color: #fff;
+            text-shadow:
+                -5px -5px 0 #fff,
+                5px -5px 0 #fff,
+                -5px 5px 0 #fff,
+                5px 5px 0 #fff,
+                -4px -4px 0 #fff,
+                4px -4px 0 #fff,
+                -4px 4px 0 #fff,
+                4px 4px 0 #fff,
+                -3px -3px 0 #fff,
+                3px -3px 0 #fff,
+                -3px 3px 0 #fff,
+                3px 3px 0 #fff,
+                -2px -2px 0 #fff,
+                2px -2px 0 #fff,
+                -2px 2px 0 #fff,
+                2px 2px 0 #fff,
+                -1px -1px 0 #fff,
+                1px -1px 0 #fff,
+                -1px 1px 0 #fff,
+                1px 1px 0 #fff;
+        }
+
+        .menu {
+            position: absolute;
+            top: 57%;
+            right: 30%;
+            transform: translate(50%, -50%);
+            text-align: left;
+            z-index: 10;
+        }
+
+        .kion-image {
+            position: absolute;
+            bottom: 0px;
+            left: 20px;
+            height: 70%;
+            width: auto;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            z-index: 10;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            font-size: 32px;
+            cursor: pointer;
+        }
+
+        .pointer {
+            width: 40px;
+            height: 40px;
+            margin-right: 20px;
+            background: linear-gradient(45deg, #ffdd00 0%, #ffdd00 50%, #ff6600 50%, #ff6600 100%);
+            clip-path: polygon(100% 50%, 0% 0%, 0% 100%);
+            animation: spin 2s linear infinite;
+            opacity: 0;
+        }
+
+        .menu-item.active .pointer {
+            opacity: 1;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate3d(1, 0, 0, 0deg);
+            }
+
+            to {
+                transform: rotate3d(1, 0, 0, 360deg);
+            }
+        }
+
+        .menu-text {
+            color: #ffff00;
+            text-shadow:
+                -2px -2px 0 #000,
+                2px -2px 0 #000,
+                -2px 2px 0 #000,
+                2px 2px 0 #000,
+                3px 3px 6px rgba(0, 0, 0, 0.8);
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:hover .menu-text,
+        .menu-item.active .menu-text {
+            color: #ffffcc;
+            text-shadow:
+                -2px -2px 0 #ffff00,
+                2px -2px 0 #ffff00,
+                -2px 2px 0 #ffff00,
+                2px 2px 0 #ffff00,
+                3px 3px 6px rgba(255, 255, 0, 0.6);
         }
 
         .notes {
@@ -50,17 +231,72 @@
             margin-top: 30px;
             text-align: center;
             line-height: 20px;
-            max-width: 600px;
+            max-width: 800px;
             text-shadow: 1px 1px 0px #306230;
         }
     </style>
 </head>
+
 <body>
-    <h1 class="title">PIBITS BREAKOUT</h1>
-    <div class="game-container"></div>
+    <h1 class="title">CONGRATULATIONS!</h1>
+    <div class="game-container">
+        <div class="background-layer"></div>
+        <div class="dither-top"></div>
+        <div class="dither-bottom"></div>
+
+        <div class="game-title">
+            <div class="complete-text">Complete!</div>
+        </div>
+
+        <div class="menu">
+            <div class="menu-item active" data-option="again">
+                <div class="pointer"></div>
+                <a href="index.html" class="menu-text" style="text-decoration: none;">Play Again</a>
+            </div>
+            <div class="menu-item" data-option="quit">
+                <div class="pointer"></div>
+                <div class="menu-text">Quit Game</div>
+            </div>
+        </div>
+
+        <img src="img/kion-happi.webp" alt="Kion Happy" class="kion-image">
+    </div>
     <p class="notes">
-        Classic breakout game tutorial<br>
-        Use arrow keys to move the paddle
+        Victory is yours! You've conquered all the stages and emerged triumphant!<br>
+        Ready for another challenge, or time to call it a day?<br>
+        Use the UP and DOWN arrow keys to navigate between options.<br>
+        Press ENTER or the A button to select your choice.
     </p>
+
+    <script>
+        let currentOption = 0;
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        function updateMenu() {
+            menuItems.forEach((item, index) => {
+                item.classList.toggle('active', index === currentOption);
+            });
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowUp') {
+                currentOption = (currentOption - 1 + menuItems.length) % menuItems.length;
+                updateMenu();
+            } else if (e.key === 'ArrowDown') {
+                currentOption = (currentOption + 1) % menuItems.length;
+                updateMenu();
+            } else if (e.key === 'Enter' || e.key === 'a' || e.key === 'A') {
+                const activeItem = menuItems[currentOption];
+                if (activeItem.dataset.option === 'again') {
+                    window.location.href = 'index.html';
+                } else if (activeItem.dataset.option === 'quit') {
+                    window.close();
+                }
+            }
+        });
+
+        updateMenu();
+    </script>
 </body>
+
 </html>
