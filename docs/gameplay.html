@@ -39,13 +39,23 @@
         .game-container {
             width: 1280px;
             height: 960px;
-            background-image: url('img/background.png');
-            background-size: cover;
-            background-position: center;
             border: 4px solid #1a1f28;
             position: relative;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/background.png');
+            background-size: cover;
+            background-position: center;
             filter: brightness(0.6) contrast(0.8);
+            z-index: 1;
         }
 
         .ui-bar {
@@ -59,7 +69,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 20px;
-            z-index: 10;
+            z-index: 20;
         }
 
         .lives, .score {
@@ -85,6 +95,7 @@
             left: 0;
             width: 100%;
             height: 95%;
+            z-index: 10;
         }
 
         .bricks-container {
@@ -164,6 +175,8 @@
 <body>
     <h1 class="title">PIBITS BREAKOUT</h1>
     <div class="game-container">
+        <div class="background-layer"></div>
+        
         <div class="ui-bar">
             <div class="lives">
                 Lives: 
