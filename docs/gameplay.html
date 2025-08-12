@@ -65,6 +65,18 @@
         .lives, .score {
             color: #ffffff;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .life-ball {
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle at 30% 30%, #ffffff, #ffaaaa, #ff4444);
+            border: 1px solid #ffffff;
+            border-radius: 50%;
+            display: inline-block;
         }
 
         .game-area {
@@ -78,48 +90,65 @@
         .bricks-container {
             position: absolute;
             top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            height: 200px;
+            left: 20px;
+            right: 20px;
+            height: 280px;
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
+            grid-template-columns: repeat(12, 1fr);
             grid-template-rows: repeat(5, 1fr);
-            gap: 4px;
+            gap: 3px;
         }
 
         .brick {
-            border-radius: 4px;
-            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            border: 2px solid rgba(255,255,255,0.5);
+            position: relative;
+            overflow: hidden;
+            animation: brickShine 3s ease-in-out infinite;
         }
 
-        .brick.red { background: linear-gradient(135deg, #ff4444, #cc3333); }
-        .brick.orange { background: linear-gradient(135deg, #ff8844, #dd6622); }
-        .brick.yellow { background: linear-gradient(135deg, #ffff44, #dddd22); }
-        .brick.green { background: linear-gradient(135deg, #44ff44, #22dd22); }
-        .brick.blue { background: linear-gradient(135deg, #4444ff, #2222dd); }
+        @keyframes brickShine {
+            0%, 100% { box-shadow: inset 0 0 10px rgba(255,255,255,0.3); }
+            50% { box-shadow: inset 0 0 20px rgba(255,255,255,0.6), 0 0 10px rgba(255,255,255,0.4); }
+        }
+
+        .brick.red { background: linear-gradient(135deg, #ff6666, #ff0000, #cc0000); }
+        .brick.orange { background: linear-gradient(135deg, #ffaa44, #ff6600, #cc4400); }
+        .brick.yellow { background: linear-gradient(135deg, #ffff66, #ffff00, #cccc00); }
+        .brick.green { background: linear-gradient(135deg, #66ff66, #00ff00, #00cc00); }
+        .brick.blue { background: linear-gradient(135deg, #6666ff, #0000ff, #0000cc); }
 
         .paddle {
             position: absolute;
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 120px;
-            height: 20px;
-            background: linear-gradient(135deg, #ffffff, #cccccc);
-            border: 2px solid #888888;
-            border-radius: 10px;
+            width: 160px;
+            height: 25px;
+            background: linear-gradient(135deg, #ffffff, #dddddd, #aaaaaa);
+            border: 3px solid #333333;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.5);
         }
 
         .ball {
             position: absolute;
-            width: 16px;
-            height: 16px;
-            background: radial-gradient(circle, #ffffff, #cccccc);
-            border: 2px solid #888888;
+            width: 32px;
+            height: 32px;
+            background: 
+                conic-gradient(from 0deg, #ffffff 0deg 45deg, #ffff00 45deg 90deg, #ffffff 90deg 135deg, #ffff00 135deg 180deg, #ffffff 180deg 225deg, #ffff00 225deg 270deg, #ffffff 270deg 315deg, #ffff00 315deg 360deg),
+                radial-gradient(circle at 30% 30%, #ffffff, #ffff88);
+            border: 3px solid #333333;
             border-radius: 50%;
             top: 60%;
             left: 45%;
+            animation: ballRotate 1s linear infinite;
+            box-shadow: 0 0 20px rgba(255,255,0,0.8);
+        }
+
+        @keyframes ballRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .notes {
@@ -136,7 +165,12 @@
     <h1 class="title">PIBITS BREAKOUT</h1>
     <div class="game-container">
         <div class="ui-bar">
-            <div class="lives">Lives: 3</div>
+            <div class="lives">
+                Lives: 
+                <span class="life-ball"></span>
+                <span class="life-ball"></span>
+                <span class="life-ball"></span>
+            </div>
             <div class="score">Score: 1250</div>
         </div>
         
@@ -152,6 +186,8 @@
                 <div class="brick red"></div>
                 <div class="brick red"></div>
                 <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
                 
                 <div class="brick orange"></div>
                 <div class="brick orange"></div>
@@ -163,6 +199,8 @@
                 <div class="brick orange"></div>
                 <div class="brick orange"></div>
                 <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
                 
                 <div class="brick yellow"></div>
                 <div class="brick yellow"></div>
@@ -174,6 +212,8 @@
                 <div class="brick yellow"></div>
                 <div class="brick yellow"></div>
                 <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
                 
                 <div class="brick green"></div>
                 <div class="brick green"></div>
@@ -185,7 +225,11 @@
                 <div class="brick green"></div>
                 <div class="brick green"></div>
                 <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
                 
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
                 <div class="brick blue"></div>
                 <div class="brick blue"></div>
                 <div class="brick blue"></div>
