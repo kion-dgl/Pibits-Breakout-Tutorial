@@ -1,4 +1,5 @@
 #include "brick.h"
+#include "game.h"
 #include <stdlib.h>
 
 void brick_init(Brick* brick, float x, float y, BrickType type, SDL_Texture* texture) {
@@ -31,14 +32,20 @@ void brick_grid_init(BrickGrid* grid, SDL_Texture* textures[BRICK_TYPES_COUNT]) 
 void brick_grid_create_stage(BrickGrid* grid, int stage) {
     grid->count = 0;
     
-    // Stage 1: Classic horizontal rows
+    // Stage 1: Classic horizontal rows - extend to screen edges
     if (stage == 1) {
-        int start_x = 50;
-        int start_y = 100;
-        int brick_width = 52;
+        int header_height = 60; // Reserve space for UI header
+        int margin = 5;         // Equal margin on both sides
+        int start_y = header_height + 20; // Below header with small margin
         int brick_height = 22;
-        int cols = 10;
         int rows = 5;
+        int cols = 12; // Number of columns
+        
+        // Calculate brick width and positioning to center perfectly
+        int available_width = WINDOW_WIDTH - (2 * margin); // Total available width
+        int brick_width = available_width / cols;
+        int total_brick_width = brick_width * cols;
+        int start_x = (WINDOW_WIDTH - total_brick_width) / 2; // Center the grid
         
         BrickType row_types[] = {BRICK_RED, BRICK_ORANGE, BRICK_YELLOW, BRICK_GREEN, BRICK_BLUE};
         
@@ -49,7 +56,9 @@ void brick_grid_create_stage(BrickGrid* grid, int stage) {
                     float y = start_y + row * brick_height;
                     BrickType type = row_types[row % BRICK_TYPES_COUNT];
                     
+                    // Update brick size to match calculated width
                     brick_init(&grid->bricks[grid->count], x, y, type, grid->textures[type]);
+                    grid->bricks[grid->count].width = brick_width - 2; // Small gap between bricks
                     grid->count++;
                 }
             }

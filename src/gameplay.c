@@ -1,6 +1,7 @@
 #include "gameplay.h"
 #include "game.h"
 #include <math.h>
+#include <stdio.h>
 
 void gameplay_init(Gameplay* gp, TextureManager* tm) {
     gp->texture_manager = tm;
@@ -70,12 +71,43 @@ void gameplay_render(Gameplay* gp, SDL_Renderer* renderer) {
                       0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
     
+    // Render black header space
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_Rect header_rect = {0, 0, WINDOW_WIDTH, 60};
+    SDL_RenderFillRect(renderer, &header_rect);
+    
+    // Render UI text (lives and score)
+    if (gp->texture_manager->font_regular) {
+        SDL_Color white_color = {255, 255, 255, 255};
+        
+        // Lives display
+        char lives_text[32];
+        sprintf(lives_text, "Lives: %d", gp->lives);
+        int lives_width, lives_height;
+        SDL_Texture* lives_texture = create_text_texture(renderer, gp->texture_manager->font_regular, 
+                                                        lives_text, white_color, &lives_width, &lives_height);
+        if (lives_texture) {
+            render_texture(renderer, lives_texture, 10, 20, lives_width, lives_height);
+            SDL_DestroyTexture(lives_texture);
+        }
+        
+        // Score display
+        char score_text[32];
+        sprintf(score_text, "Score: %d", gp->score);
+        int score_width, score_height;
+        SDL_Texture* score_texture = create_text_texture(renderer, gp->texture_manager->font_regular, 
+                                                        score_text, white_color, &score_width, &score_height);
+        if (score_texture) {
+            int score_x = WINDOW_WIDTH - score_width - 10;
+            render_texture(renderer, score_texture, score_x, 20, score_width, score_height);
+            SDL_DestroyTexture(score_texture);
+        }
+    }
+    
     // Render game objects
     brick_grid_render(&gp->brick_grid, renderer);
     paddle_render(&gp->paddle, renderer);
     ball_render(&gp->ball, renderer);
-    
-    // TODO: Render UI (lives, score)
 }
 
 void gameplay_reset_ball(Gameplay* gp) {
