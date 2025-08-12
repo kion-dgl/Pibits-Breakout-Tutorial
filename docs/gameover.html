@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pibits Breakout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(45deg, #0faebc 25%, transparent 25%), 
+                        linear-gradient(-45deg, #0faebc 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #0faebc 75%), 
+                        linear-gradient(-45deg, transparent 75%, #0faebc 75%);
+            background-size: 4px 4px;
+            background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+            background-color: #0faebc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Press Start 2P', monospace;
+            color: #0f380f;
+        }
+
+        .title {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 0px #306230;
+        }
+
+        .game-container {
+            width: 1280px;
+            height: 960px;
+            background-color: #2b3440;
+            border: 4px solid #1a1f28;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .notes {
+            font-size: 12px;
+            margin-top: 30px;
+            text-align: center;
+            line-height: 20px;
+            max-width: 600px;
+            text-shadow: 1px 1px 0px #306230;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">PIBITS BREAKOUT</h1>
+    <div class="game-container"></div>
+    <p class="notes">
+        Classic breakout game tutorial<br>
+        Use arrow keys to move the paddle
+    </p>
+</body>
+</html>
