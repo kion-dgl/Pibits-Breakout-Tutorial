@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include "texture_manager.h"
 #include "title_screen.h"
+#include "gameplay.h"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -30,6 +31,7 @@ typedef struct {
     float delta_time;
     TextureManager texture_manager;
     TitleScreen title_screen;
+    Gameplay gameplay;
 } Game;
 
 int game_init(Game* game);

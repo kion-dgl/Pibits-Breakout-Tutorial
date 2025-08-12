@@ -33,6 +33,11 @@ int texture_manager_init(TextureManager* tm, SDL_Renderer* renderer) {
     tm->arrow.texture = NULL;
     tm->ball.texture = NULL;
     tm->paddle.texture = NULL;
+    tm->brick_red.texture = NULL;
+    tm->brick_yellow.texture = NULL;
+    tm->brick_green.texture = NULL;
+    tm->brick_blue.texture = NULL;
+    tm->brick_purple.texture = NULL;
     tm->font_regular = NULL;
     tm->font_title = NULL;
     
@@ -75,6 +80,30 @@ int texture_manager_init(TextureManager* tm, SDL_Renderer* renderer) {
     if (!tm->arrow.texture) {
         printf("Warning: Failed to load arrow texture\n");
     }
+    
+    printf("DEBUG: Loading gameplay textures...\n");
+    tm->ball.texture = load_texture(renderer, "docs/assets/UI/ballBlue.png", 
+                                   &tm->ball.width, &tm->ball.height);
+    if (!tm->ball.texture) {
+        printf("Warning: Failed to load ball texture\n");
+    }
+    
+    tm->paddle.texture = load_texture(renderer, "docs/assets/UI/paddleBlu.png", 
+                                     &tm->paddle.width, &tm->paddle.height);
+    if (!tm->paddle.texture) {
+        printf("Warning: Failed to load paddle texture\n");
+    }
+    
+    tm->brick_red.texture = load_texture(renderer, "docs/assets/UI/element_red_rectangle.png", 
+                                        &tm->brick_red.width, &tm->brick_red.height);
+    tm->brick_yellow.texture = load_texture(renderer, "docs/assets/UI/element_yellow_rectangle.png", 
+                                           &tm->brick_yellow.width, &tm->brick_yellow.height);
+    tm->brick_green.texture = load_texture(renderer, "docs/assets/UI/element_green_rectangle.png", 
+                                          &tm->brick_green.width, &tm->brick_green.height);
+    tm->brick_blue.texture = load_texture(renderer, "docs/assets/UI/element_blue_rectangle.png", 
+                                         &tm->brick_blue.width, &tm->brick_blue.height);
+    tm->brick_purple.texture = load_texture(renderer, "docs/assets/UI/element_purple_rectangle.png", 
+                                           &tm->brick_purple.width, &tm->brick_purple.height);
     
     printf("Loading fonts...\n");
     tm->font_regular = TTF_OpenFont("docs/assets/Font/Kenney Future.ttf", 24);
@@ -132,6 +161,26 @@ void texture_manager_cleanup(TextureManager* tm) {
     if (tm->paddle.texture) {
         SDL_DestroyTexture(tm->paddle.texture);
         tm->paddle.texture = NULL;
+    }
+    if (tm->brick_red.texture) {
+        SDL_DestroyTexture(tm->brick_red.texture);
+        tm->brick_red.texture = NULL;
+    }
+    if (tm->brick_yellow.texture) {
+        SDL_DestroyTexture(tm->brick_yellow.texture);
+        tm->brick_yellow.texture = NULL;
+    }
+    if (tm->brick_green.texture) {
+        SDL_DestroyTexture(tm->brick_green.texture);
+        tm->brick_green.texture = NULL;
+    }
+    if (tm->brick_blue.texture) {
+        SDL_DestroyTexture(tm->brick_blue.texture);
+        tm->brick_blue.texture = NULL;
+    }
+    if (tm->brick_purple.texture) {
+        SDL_DestroyTexture(tm->brick_purple.texture);
+        tm->brick_purple.texture = NULL;
     }
     
     printf("DEBUG: Closing fonts...\n");

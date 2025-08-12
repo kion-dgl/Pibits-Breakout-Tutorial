@@ -21,6 +21,11 @@ typedef struct {
     Texture arrow;
     Texture ball;
     Texture paddle;
+    Texture brick_red;
+    Texture brick_yellow;
+    Texture brick_green;
+    Texture brick_blue;
+    Texture brick_purple;
     TTF_Font* font_regular;
     TTF_Font* font_title;
 } TextureManager;

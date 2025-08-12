@@ -66,6 +66,10 @@ int game_init(Game* game) {
     title_screen_init(&game->title_screen, &game->texture_manager);
     printf("DEBUG: Title screen initialized successfully\n");
     
+    printf("DEBUG: Initializing gameplay...\n");
+    gameplay_init(&game->gameplay, &game->texture_manager);
+    printf("DEBUG: Gameplay initialized successfully\n");
+    
     game->current_state = GAME_STATE_TITLE;
     game->running = true;
     game->last_time = SDL_GetTicks();
@@ -143,8 +147,12 @@ void game_handle_events(Game* game) {
                 game->current_state = next_state;
                 break;
             }
-            case GAME_STATE_GAMEPLAY:
+            case GAME_STATE_GAMEPLAY: {
+                int next_state = game->current_state;
+                gameplay_handle_input(&game->gameplay, &e, &next_state);
+                game->current_state = next_state;
                 break;
+            }
             case GAME_STATE_GAMEOVER:
                 break;
             case GAME_STATE_COMPLETE:
@@ -162,6 +170,7 @@ void game_update(Game* game) {
             title_screen_update(&game->title_screen, game->delta_time);
             break;
         case GAME_STATE_GAMEPLAY:
+            gameplay_update(&game->gameplay, game->delta_time);
             break;
         case GAME_STATE_GAMEOVER:
             break;
@@ -182,6 +191,7 @@ void game_render(Game* game) {
             title_screen_render(&game->title_screen, game->renderer);
             break;
         case GAME_STATE_GAMEPLAY:
+            gameplay_render(&game->gameplay, game->renderer);
             break;
         case GAME_STATE_GAMEOVER:
             break;
