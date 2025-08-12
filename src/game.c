@@ -3,7 +3,7 @@
 
 int game_init(Game* game) {
     printf("DEBUG: Starting SDL initialization...\n");
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return -1;
     }
@@ -42,10 +42,11 @@ int game_init(Game* game) {
     
     printf("DEBUG: Initializing SDL_mixer...\n");
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-        return -1;
+        printf("Warning: SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+        // Don't return error, continue without audio
+    } else {
+        printf("DEBUG: SDL_mixer initialized successfully\n");
     }
-    printf("DEBUG: SDL_mixer initialized successfully\n");
     
     printf("DEBUG: Initializing SDL_ttf...\n");
     if (TTF_Init() == -1) {
@@ -88,21 +89,36 @@ void game_run(Game* game) {
 }
 
 void game_cleanup(Game* game) {
+    printf("DEBUG: Starting cleanup...\n");
+    
+    printf("DEBUG: Cleaning up texture manager...\n");
     texture_manager_cleanup(&game->texture_manager);
     
+    printf("DEBUG: Quitting TTF...\n");
     TTF_Quit();
+    
+    printf("DEBUG: Quitting mixer...\n");
     Mix_Quit();
+    
+    printf("DEBUG: Quitting IMG...\n");
     IMG_Quit();
     
+    printf("DEBUG: Destroying renderer...\n");
     if (game->renderer) {
         SDL_DestroyRenderer(game->renderer);
+        game->renderer = NULL;
     }
     
+    printf("DEBUG: Destroying window...\n");
     if (game->window) {
         SDL_DestroyWindow(game->window);
+        game->window = NULL;
     }
     
+    printf("DEBUG: Quitting SDL...\n");
     SDL_Quit();
+    
+    printf("DEBUG: Cleanup complete.\n");
 }
 
 void game_handle_events(Game* game) {

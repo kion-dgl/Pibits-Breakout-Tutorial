@@ -55,7 +55,7 @@ void title_screen_render(TitleScreen* ts, SDL_Renderer* renderer) {
         int dashie_width = ts->texture_manager->dashie.width;
         int dashie_height = ts->texture_manager->dashie.height;
         int dashie_x = WINDOW_WIDTH - dashie_width - 10;
-        int dashie_y = WINDOW_HEIGHT - dashie_height - 10;
+        int dashie_y = WINDOW_HEIGHT - dashie_height;
         render_texture(renderer, ts->texture_manager->dashie.texture, 
                       dashie_x, dashie_y, dashie_width, dashie_height);
     }

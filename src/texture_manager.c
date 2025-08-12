@@ -100,16 +100,50 @@ int texture_manager_init(TextureManager* tm, SDL_Renderer* renderer) {
 }
 
 void texture_manager_cleanup(TextureManager* tm) {
-    if (tm->background.texture) SDL_DestroyTexture(tm->background.texture);
-    if (tm->logo.texture) SDL_DestroyTexture(tm->logo.texture);
-    if (tm->dashie.texture) SDL_DestroyTexture(tm->dashie.texture);
-    if (tm->kion_ded.texture) SDL_DestroyTexture(tm->kion_ded.texture);
-    if (tm->kion_happi.texture) SDL_DestroyTexture(tm->kion_happi.texture);
-    if (tm->arrow.texture) SDL_DestroyTexture(tm->arrow.texture);
-    if (tm->ball.texture) SDL_DestroyTexture(tm->ball.texture);
-    if (tm->paddle.texture) SDL_DestroyTexture(tm->paddle.texture);
-    if (tm->font_regular) TTF_CloseFont(tm->font_regular);
-    if (tm->font_title) TTF_CloseFont(tm->font_title);
+    printf("DEBUG: Destroying textures...\n");
+    if (tm->background.texture) {
+        SDL_DestroyTexture(tm->background.texture);
+        tm->background.texture = NULL;
+    }
+    if (tm->logo.texture) {
+        SDL_DestroyTexture(tm->logo.texture);
+        tm->logo.texture = NULL;
+    }
+    if (tm->dashie.texture) {
+        SDL_DestroyTexture(tm->dashie.texture);
+        tm->dashie.texture = NULL;
+    }
+    if (tm->kion_ded.texture) {
+        SDL_DestroyTexture(tm->kion_ded.texture);
+        tm->kion_ded.texture = NULL;
+    }
+    if (tm->kion_happi.texture) {
+        SDL_DestroyTexture(tm->kion_happi.texture);
+        tm->kion_happi.texture = NULL;
+    }
+    if (tm->arrow.texture) {
+        SDL_DestroyTexture(tm->arrow.texture);
+        tm->arrow.texture = NULL;
+    }
+    if (tm->ball.texture) {
+        SDL_DestroyTexture(tm->ball.texture);
+        tm->ball.texture = NULL;
+    }
+    if (tm->paddle.texture) {
+        SDL_DestroyTexture(tm->paddle.texture);
+        tm->paddle.texture = NULL;
+    }
+    
+    printf("DEBUG: Closing fonts...\n");
+    if (tm->font_regular) {
+        TTF_CloseFont(tm->font_regular);
+        tm->font_regular = NULL;
+    }
+    if (tm->font_title) {
+        TTF_CloseFont(tm->font_title);
+        tm->font_title = NULL;
+    }
+    printf("DEBUG: Texture manager cleanup complete.\n");
 }
 
 void render_texture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y, int width, int height) {
