@@ -14,7 +14,7 @@
 
         body {
             width: 100vw;
-            height: 100vh;
+            min-height: 100vh;
             background: linear-gradient(45deg, #0faebc 25%, transparent 25%), 
                         linear-gradient(-45deg, #0faebc 25%, transparent 25%), 
                         linear-gradient(45deg, transparent 75%, #0faebc 75%), 
@@ -22,12 +22,16 @@
             background-size: 4px 4px;
             background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
             background-color: #0faebc;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             font-family: 'Press Start 2P', monospace;
             color: #0f380f;
+            padding: 30px 0;
+        }
+
+        .stage-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 50px;
         }
 
         .title {
@@ -121,6 +125,13 @@
             align-self: center;
         }
 
+        .brick:not(.red):not(.orange):not(.yellow):not(.green):not(.blue) {
+            border: none;
+            background: transparent;
+            animation: none;
+            box-shadow: none;
+        }
+
         @keyframes brickShine {
             0%, 100% { box-shadow: inset 0 0 10px rgba(255,255,255,0.3); }
             50% { box-shadow: inset 0 0 20px rgba(255,255,255,0.6), 0 0 10px rgba(255,255,255,0.4); }
@@ -173,8 +184,9 @@
     </style>
 </head>
 <body>
-    <h1 class="title">PIBITS BREAKOUT</h1>
-    <div class="game-container">
+    <div class="stage-section">
+        <h1 class="title">Stage 1</h1>
+        <div class="game-container">
         <div class="background-layer"></div>
         
         <div class="ui-bar">
@@ -258,12 +270,385 @@
             <div class="paddle"></div>
             <div class="ball"></div>
         </div>
+        </div>
+        <p class="notes">
+            Breakout gameplay in action! Control your paddle to keep the ball in play.<br>
+            Use LEFT and RIGHT arrow keys to move the paddle.<br>
+            Press the START button to pause the game.<br>
+            Destroy all bricks to advance to the next level!
+        </p>
     </div>
-    <p class="notes">
-        Breakout gameplay in action! Control your paddle to keep the ball in play.<br>
-        Use LEFT and RIGHT arrow keys to move the paddle.<br>
-        Press the START button to pause the game.<br>
-        Destroy all bricks to advance to the next level!
-    </p>
+
+    <div class="stage-section">
+        <h1 class="title">Stage 2</h1>
+        <div class="game-container">
+        <div class="background-layer"></div>
+        
+        <div class="ui-bar">
+            <div class="lives">
+                Lives: 
+                <span class="life-ball"></span>
+                <span class="life-ball"></span>
+                <span class="life-ball"></span>
+            </div>
+            <div class="score">Score: 2850</div>
+        </div>
+        
+        <div class="game-area">
+            <div class="bricks-container">
+                <!-- Checkerboard pattern -->
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                <div class="brick blue"></div>
+                <div class="brick red"></div>
+                
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+            </div>
+            
+            <div class="paddle"></div>
+            <div class="ball"></div>
+        </div>
+        </div>
+        <p class="notes">
+            Stage 2: Checkerboard Challenge! The bricks form a challenging alternating pattern.<br>
+            Difficulty increases with mixed brick layouts requiring strategic ball placement.
+        </p>
+    </div>
+
+    <div class="stage-section">
+        <h1 class="title">Stage 3</h1>
+        <div class="game-container">
+        <div class="background-layer"></div>
+        
+        <div class="ui-bar">
+            <div class="lives">
+                Lives: 
+                <span class="life-ball"></span>
+                <span class="life-ball"></span>
+            </div>
+            <div class="score">Score: 4720</div>
+        </div>
+        
+        <div class="game-area">
+            <div class="bricks-container">
+                <!-- Diamond pattern with gaps -->
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                
+                <div class="brick"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick"></div>
+                
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+            </div>
+            
+            <div class="paddle"></div>
+            <div class="ball"></div>
+        </div>
+        </div>
+        <p class="notes">
+            Stage 3: Diamond Formation! Navigate through gaps to reach all bricks.<br>
+            Strategic angles are key to clearing this diamond-shaped formation.
+        </p>
+    </div>
+
+    <div class="stage-section">
+        <h1 class="title">Stage 4</h1>
+        <div class="game-container">
+        <div class="background-layer"></div>
+        
+        <div class="ui-bar">
+            <div class="lives">
+                Lives: 
+                <span class="life-ball"></span>
+                <span class="life-ball"></span>
+            </div>
+            <div class="score">Score: 7340</div>
+        </div>
+        
+        <div class="game-area">
+            <div class="bricks-container">
+                <!-- Fortress pattern -->
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                
+                <div class="brick red"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick orange"></div>
+                <div class="brick red"></div>
+                
+                <div class="brick red"></div>
+                <div class="brick orange"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick"></div>
+                <div class="brick"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick yellow"></div>
+                <div class="brick orange"></div>
+                <div class="brick red"></div>
+                
+                <div class="brick red"></div>
+                <div class="brick orange"></div>
+                <div class="brick yellow"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick orange"></div>
+                <div class="brick red"></div>
+                
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+            </div>
+            
+            <div class="paddle"></div>
+            <div class="ball"></div>
+        </div>
+        </div>
+        <p class="notes">
+            Stage 4: The Fortress! Break through the heavily fortified red walls.<br>
+            Find the weak spots in this castle-like defensive formation.
+        </p>
+    </div>
+
+    <div class="stage-section">
+        <h1 class="title">Stage 5</h1>
+        <div class="game-container">
+        <div class="background-layer"></div>
+        
+        <div class="ui-bar">
+            <div class="lives">
+                Lives: 
+                <span class="life-ball"></span>
+            </div>
+            <div class="score">Score: 9999</div>
+        </div>
+        
+        <div class="game-area">
+            <div class="bricks-container">
+                <!-- Final boss pattern - maze-like -->
+                <div class="brick blue"></div>
+                <div class="brick"></div>
+                <div class="brick blue"></div>
+                <div class="brick"></div>
+                <div class="brick blue"></div>
+                <div class="brick"></div>
+                <div class="brick blue"></div>
+                <div class="brick"></div>
+                <div class="brick blue"></div>
+                <div class="brick"></div>
+                <div class="brick blue"></div>
+                <div class="brick"></div>
+                
+                <div class="brick blue"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick"></div>
+                <div class="brick green"></div>
+                <div class="brick"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick green"></div>
+                <div class="brick blue"></div>
+                
+                <div class="brick blue"></div>
+                <div class="brick green"></div>
+                <div class="brick yellow"></div>
+                <div class="brick"></div>
+                <div class="brick yellow"></div>
+                <div class="brick"></div>
+                <div class="brick yellow"></div>
+                <div class="brick"></div>
+                <div class="brick yellow"></div>
+                <div class="brick"></div>
+                <div class="brick green"></div>
+                <div class="brick blue"></div>
+                
+                <div class="brick blue"></div>
+                <div class="brick green"></div>
+                <div class="brick"></div>
+                <div class="brick orange"></div>
+                <div class="brick"></div>
+                <div class="brick red"></div>
+                <div class="brick red"></div>
+                <div class="brick"></div>
+                <div class="brick orange"></div>
+                <div class="brick"></div>
+                <div class="brick green"></div>
+                <div class="brick blue"></div>
+                
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+                <div class="brick blue"></div>
+            </div>
+            
+            <div class="paddle"></div>
+            <div class="ball"></div>
+        </div>
+        </div>
+        <p class="notes">
+            Stage 5: The Final Challenge! Navigate the maze to reach the core.<br>
+            Master precision and patience to conquer this ultimate test!
+        </p>
+    </div>
 </body>
 </html>
