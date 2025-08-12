@@ -39,10 +39,141 @@
         .game-container {
             width: 1280px;
             height: 960px;
-            background-color: #2b3440;
+            background-image: url('img/background.png');
+            background-size: cover;
+            background-position: center;
             border: 4px solid #1a1f28;
             position: relative;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .dither-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 15%;
+            background: linear-gradient(180deg, 
+                rgba(0,0,0,0.8) 0%,
+                rgba(0,0,0,0.6) 25%, 
+                rgba(0,0,0,0.4) 50%,
+                rgba(0,0,0,0.2) 75%,
+                transparent 100%);
+            background-image: 
+                radial-gradient(circle at 25% 25%, transparent 2px, rgba(0,0,0,0.1) 2px),
+                radial-gradient(circle at 75% 75%, transparent 2px, rgba(0,0,0,0.1) 2px);
+            background-size: 8px 8px;
+            pointer-events: none;
+        }
+
+        .dither-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 25%;
+            background: linear-gradient(0deg, 
+                rgba(0,0,0,0.8) 0%,
+                rgba(0,0,0,0.6) 25%, 
+                rgba(0,0,0,0.4) 50%,
+                rgba(0,0,0,0.2) 75%,
+                transparent 100%);
+            background-image: 
+                radial-gradient(circle at 25% 25%, transparent 2px, rgba(0,0,0,0.1) 2px),
+                radial-gradient(circle at 75% 75%, transparent 2px, rgba(0,0,0,0.1) 2px);
+            background-size: 8px 8px;
+            pointer-events: none;
+        }
+
+        .game-title {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .japanese-text {
+            font-size: 16px;
+            color: #ffffff;
+            text-shadow: 
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                1px 1px 0 #000,
+                2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+
+        .english-title {
+            font-size: 48px;
+            background: linear-gradient(135deg, #00ff41 0%, #00cc33 50%, #009922 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 
+                -2px -2px 0 #fff,
+                2px -2px 0 #fff,
+                -2px 2px 0 #fff,
+                2px 2px 0 #fff,
+                4px 4px 8px rgba(0,0,0,0.5);
+        }
+
+        .menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: left;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            font-size: 32px;
+            cursor: pointer;
+        }
+
+        .pointer {
+            width: 40px;
+            height: 40px;
+            margin-right: 20px;
+            background: #00ff41;
+            clip-path: polygon(0% 50%, 100% 0%, 100% 100%);
+            animation: spin 2s linear infinite;
+            opacity: 0;
+        }
+
+        .menu-item.active .pointer {
+            opacity: 1;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .menu-text {
+            color: #ffff00;
+            text-shadow: 
+                -2px -2px 0 #000,
+                2px -2px 0 #000,
+                -2px 2px 0 #000,
+                2px 2px 0 #000,
+                3px 3px 6px rgba(0,0,0,0.8);
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:hover .menu-text,
+        .menu-item.active .menu-text {
+            color: #ffffff;
+            text-shadow: 
+                -2px -2px 0 #ffff00,
+                2px -2px 0 #ffff00,
+                -2px 2px 0 #ffff00,
+                2px 2px 0 #ffff00,
+                3px 3px 6px rgba(255,255,0,0.8);
         }
 
         .notes {
@@ -50,17 +181,68 @@
             margin-top: 30px;
             text-align: center;
             line-height: 20px;
-            max-width: 600px;
+            max-width: 800px;
             text-shadow: 1px 1px 0px #306230;
         }
     </style>
 </head>
 <body>
     <h1 class="title">PIBITS BREAKOUT</h1>
-    <div class="game-container"></div>
+    <div class="game-container">
+        <div class="dither-top"></div>
+        <div class="dither-bottom"></div>
+        
+        <div class="game-title">
+            <div class="japanese-text">ブレークアウト</div>
+            <div class="english-title">Break Out</div>
+        </div>
+        
+        <div class="menu">
+            <div class="menu-item active" data-option="start">
+                <div class="pointer"></div>
+                <a href="gameplay.html" class="menu-text" style="text-decoration: none;">Start Game</a>
+            </div>
+            <div class="menu-item" data-option="quit">
+                <div class="pointer"></div>
+                <div class="menu-text">Quit Game</div>
+            </div>
+        </div>
+    </div>
     <p class="notes">
-        Classic breakout game tutorial<br>
-        Use arrow keys to move the paddle
+        Welcome to the Break Out start screen! This is where your adventure begins.<br>
+        Choose between starting a new game or quitting the application.<br>
+        Use the UP and DOWN arrow keys to navigate between options.<br>
+        Press ENTER or the A button to select your choice.
     </p>
+
+    <script>
+        let currentOption = 0;
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        function updateMenu() {
+            menuItems.forEach((item, index) => {
+                item.classList.toggle('active', index === currentOption);
+            });
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp') {
+                currentOption = (currentOption - 1 + menuItems.length) % menuItems.length;
+                updateMenu();
+            } else if (e.key === 'ArrowDown') {
+                currentOption = (currentOption + 1) % menuItems.length;
+                updateMenu();
+            } else if (e.key === 'Enter' || e.key === 'a' || e.key === 'A') {
+                const activeItem = menuItems[currentOption];
+                if (activeItem.dataset.option === 'start') {
+                    window.location.href = 'gameplay.html';
+                } else if (activeItem.dataset.option === 'quit') {
+                    window.close();
+                }
+            }
+        });
+        
+        updateMenu();
+    </script>
 </body>
 </html>
