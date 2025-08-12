@@ -37,6 +37,15 @@ void gameplay_handle_input(Gameplay* gp, SDL_Event* e, int* next_state) {
             case SDLK_ESCAPE:
                 *next_state = GAME_STATE_TITLE;
                 break;
+            case SDLK_SPACE:
+                // Advance to next stage
+                gp->stage++;
+                if (gp->stage > 5) {
+                    gp->stage = 1; // Loop back to stage 1 for now
+                }
+                brick_grid_create_stage(&gp->brick_grid, gp->stage);
+                gameplay_reset_ball(gp);
+                break;
         }
     }
 }
@@ -57,7 +66,8 @@ void gameplay_update(Gameplay* gp, float delta_time) {
     if (gp->ball.y > WINDOW_HEIGHT) {
         gp->lives--;
         if (gp->lives <= 0) {
-            // Game over - will be handled by state management
+            gp->lives = 0; // Prevent negative lives
+            // TODO: Trigger game over state
         } else {
             gameplay_reset_ball(gp);
         }
@@ -101,6 +111,18 @@ void gameplay_render(Gameplay* gp, SDL_Renderer* renderer) {
             int score_x = WINDOW_WIDTH - score_width - 10;
             render_texture(renderer, score_texture, score_x, 20, score_width, score_height);
             SDL_DestroyTexture(score_texture);
+        }
+        
+        // Stage display (center)
+        char stage_text[32];
+        sprintf(stage_text, "Stage: %d", gp->stage);
+        int stage_width, stage_height;
+        SDL_Texture* stage_texture = create_text_texture(renderer, gp->texture_manager->font_regular, 
+                                                        stage_text, white_color, &stage_width, &stage_height);
+        if (stage_texture) {
+            int stage_x = (WINDOW_WIDTH - stage_width) / 2;
+            render_texture(renderer, stage_texture, stage_x, 20, stage_width, stage_height);
+            SDL_DestroyTexture(stage_texture);
         }
     }
     
