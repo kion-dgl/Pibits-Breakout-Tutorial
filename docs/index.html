@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pibits Breakout</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One:wght@400&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,10 +17,10 @@
         body {
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(45deg, #0faebc 25%, transparent 25%), 
-                        linear-gradient(-45deg, #0faebc 25%, transparent 25%), 
-                        linear-gradient(45deg, transparent 75%, #0faebc 75%), 
-                        linear-gradient(-45deg, transparent 75%, #0faebc 75%);
+            background: linear-gradient(45deg, #0faebc 25%, transparent 25%),
+                linear-gradient(-45deg, #0faebc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #0faebc 75%),
+                linear-gradient(-45deg, transparent 75%, #0faebc 75%);
             background-size: 4px 4px;
             background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
             background-color: #0faebc;
@@ -53,15 +55,15 @@
             left: 0;
             width: 100%;
             height: 15%;
-            background: linear-gradient(180deg, 
-                rgba(0,0,0,0.8) 0%,
-                rgba(0,0,0,0.6) 25%, 
-                rgba(0,0,0,0.4) 50%,
-                rgba(0,0,0,0.2) 75%,
-                transparent 100%);
-            background-image: 
-                radial-gradient(circle at 25% 25%, transparent 2px, rgba(0,0,0,0.1) 2px),
-                radial-gradient(circle at 75% 75%, transparent 2px, rgba(0,0,0,0.1) 2px);
+            background: linear-gradient(180deg,
+                    rgba(0, 0, 0, 0.8) 0%,
+                    rgba(0, 0, 0, 0.6) 25%,
+                    rgba(0, 0, 0, 0.4) 50%,
+                    rgba(0, 0, 0, 0.2) 75%,
+                    transparent 100%);
+            background-image:
+                radial-gradient(circle at 25% 25%, transparent 2px, rgba(0, 0, 0, 0.1) 2px),
+                radial-gradient(circle at 75% 75%, transparent 2px, rgba(0, 0, 0, 0.1) 2px);
             background-size: 8px 8px;
             pointer-events: none;
         }
@@ -72,15 +74,15 @@
             left: 0;
             width: 100%;
             height: 25%;
-            background: linear-gradient(0deg, 
-                rgba(0,0,0,0.8) 0%,
-                rgba(0,0,0,0.6) 25%, 
-                rgba(0,0,0,0.4) 50%,
-                rgba(0,0,0,0.2) 75%,
-                transparent 100%);
-            background-image: 
-                radial-gradient(circle at 25% 25%, transparent 2px, rgba(0,0,0,0.1) 2px),
-                radial-gradient(circle at 75% 75%, transparent 2px, rgba(0,0,0,0.1) 2px);
+            background: linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.8) 0%,
+                    rgba(0, 0, 0, 0.6) 25%,
+                    rgba(0, 0, 0, 0.4) 50%,
+                    rgba(0, 0, 0, 0.2) 75%,
+                    transparent 100%);
+            background-image:
+                radial-gradient(circle at 25% 25%, transparent 2px, rgba(0, 0, 0, 0.1) 2px),
+                radial-gradient(circle at 75% 75%, transparent 2px, rgba(0, 0, 0, 0.1) 2px);
             background-size: 8px 8px;
             pointer-events: none;
         }
@@ -96,35 +98,74 @@
         .japanese-text {
             font-size: 16px;
             color: #ffffff;
-            text-shadow: 
+            text-shadow:
                 -1px -1px 0 #000,
                 1px -1px 0 #000,
                 -1px 1px 0 #000,
                 1px 1px 0 #000,
-                2px 2px 4px rgba(0,0,0,0.5);
+                2px 2px 4px rgba(0, 0, 0, 0.5);
             margin-bottom: 10px;
         }
 
         .english-title {
-            font-size: 48px;
-            background: linear-gradient(135deg, #00ff41 0%, #00cc33 50%, #009922 100%);
+            font-family: 'Fredoka One', cursive;
+            font-size: 96px;
+            background: linear-gradient(180deg, #00ff41 0%, #00cc33 50%, #009922 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 
+            color: transparent;
+            position: relative;
+        }
+
+        .english-title::before {
+            content: "Break Out";
+            font-family: 'Fredoka One', cursive;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            color: #fff;
+            text-shadow:
+                -5px -5px 0 #fff,
+                5px -5px 0 #fff,
+                -5px 5px 0 #fff,
+                5px 5px 0 #fff,
+                -4px -4px 0 #fff,
+                4px -4px 0 #fff,
+                -4px 4px 0 #fff,
+                4px 4px 0 #fff,
+                -3px -3px 0 #fff,
+                3px -3px 0 #fff,
+                -3px 3px 0 #fff,
+                3px 3px 0 #fff,
                 -2px -2px 0 #fff,
                 2px -2px 0 #fff,
                 -2px 2px 0 #fff,
                 2px 2px 0 #fff,
-                4px 4px 8px rgba(0,0,0,0.5);
+                -1px -1px 0 #fff,
+                1px -1px 0 #fff,
+                -1px 1px 0 #fff,
+                1px 1px 0 #fff;
         }
 
         .menu {
             position: absolute;
             top: 50%;
-            left: 50%;
+            left: 30%;
             transform: translate(-50%, -50%);
             text-align: left;
+        }
+
+        .dashie-image {
+            position: absolute;
+            bottom: 0px;
+            right: 20px;
+            height: 75%;
+            width: auto;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
 
         .menu-item {
@@ -150,30 +191,35 @@
         }
 
         @keyframes spin {
-            from { transform: rotate3d(1, 0, 0, 0deg); }
-            to { transform: rotate3d(1, 0, 0, 360deg); }
+            from {
+                transform: rotate3d(1, 0, 0, 0deg);
+            }
+
+            to {
+                transform: rotate3d(1, 0, 0, 360deg);
+            }
         }
 
         .menu-text {
             color: #ffff00;
-            text-shadow: 
+            text-shadow:
                 -2px -2px 0 #000,
                 2px -2px 0 #000,
                 -2px 2px 0 #000,
                 2px 2px 0 #000,
-                3px 3px 6px rgba(0,0,0,0.8);
+                3px 3px 6px rgba(0, 0, 0, 0.8);
             transition: all 0.2s ease;
         }
 
         .menu-item:hover .menu-text,
         .menu-item.active .menu-text {
             color: #ffffff;
-            text-shadow: 
+            text-shadow:
                 -2px -2px 0 #ffff00,
                 2px -2px 0 #ffff00,
                 -2px 2px 0 #ffff00,
                 2px 2px 0 #ffff00,
-                3px 3px 6px rgba(255,255,0,0.8);
+                3px 3px 6px rgba(255, 255, 0, 0.8);
         }
 
         .notes {
@@ -186,17 +232,18 @@
         }
     </style>
 </head>
+
 <body>
     <h1 class="title">PIBITS BREAKOUT</h1>
     <div class="game-container">
         <div class="dither-top"></div>
         <div class="dither-bottom"></div>
-        
+
         <div class="game-title">
             <div class="japanese-text">ブレークアウト</div>
             <div class="english-title">Break Out</div>
         </div>
-        
+
         <div class="menu">
             <div class="menu-item active" data-option="start">
                 <div class="pointer"></div>
@@ -207,6 +254,8 @@
                 <div class="menu-text">Quit Game</div>
             </div>
         </div>
+
+        <img src="img/dashie.webp" alt="Dashie" class="dashie-image">
     </div>
     <p class="notes">
         Welcome to the Break Out start screen! This is where your adventure begins.<br>
@@ -218,14 +267,14 @@
     <script>
         let currentOption = 0;
         const menuItems = document.querySelectorAll('.menu-item');
-        
+
         function updateMenu() {
             menuItems.forEach((item, index) => {
                 item.classList.toggle('active', index === currentOption);
             });
         }
-        
-        document.addEventListener('keydown', function(e) {
+
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'ArrowUp') {
                 currentOption = (currentOption - 1 + menuItems.length) % menuItems.length;
                 updateMenu();
@@ -241,8 +290,9 @@
                 }
             }
         });
-        
+
         updateMenu();
     </script>
 </body>
+
 </html>
