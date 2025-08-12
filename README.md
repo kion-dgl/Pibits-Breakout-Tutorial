@@ -68,6 +68,65 @@ sudo apt install libsdl2-dev libsdl2-image-dev libglew-dev libgl1-mesa-dev cmake
 
 Each section of the tutorial is broken down into clearly labeled directories, so you can start from any step and follow the code as it evolves. Make sure to check out the comments in each source file for more details!
 
+## 🎨 Asset Checklist
+
+To create a complete Brickout game in C with OpenGL/SDL, you'll need the following assets organized in your project directory:
+
+### Visual Assets (`/assets/textures/` directory)
+**Game Objects:**
+- `ball.png` - Ball sprite with checkerboard or solid design
+- `paddle.png` - Paddle sprite texture
+- `brick-red.png` - Red brick texture
+- `brick-orange.png` - Orange brick texture  
+- `brick-yellow.png` - Yellow brick texture
+- `brick-green.png` - Green brick texture
+- `brick-blue.png` - Blue brick texture
+- `brick-special.png` - Special/bonus brick texture
+
+**Backgrounds & UI:**
+- `background.png` - Cave/dungeon background image for gameplay
+- `menu-background.png` - Background for menu screens
+- `brickout-logo.png` - Main game logo for title screen
+- `game-over-bg.png` - Background for game over screen
+- `victory-bg.png` - Background for completion screen
+
+**Characters & UI Elements:**
+- `dashie.png` - Character sprite for start screen
+- `kion-ded.png` - Character sprite showing defeat
+- `kion-happi.png` - Character sprite showing victory
+- `selector-arrow.png` - Menu selection pointer
+- `heart-icon.png` - Life/health indicator icons
+
+**Effects & Overlays:**
+- `dither-top.png` - Top gradient dithering overlay
+- `dither-bottom.png` - Bottom gradient dithering overlay
+- `particle-spark.png` - Spark effect when bricks break
+- `glow-effect.png` - Glow overlay for special effects
+
+### Audio Assets (`/assets/audio/` directory)
+**Background Music (BGM):**
+- `menu-theme.ogg` - Upbeat theme for start screen and menus
+- `gameplay-theme.ogg` - Energetic background music during gameplay
+- `victory-theme.ogg` - Triumphant music for game completion
+- `gameover-theme.ogg` - Somber music for game over screen
+
+**Sound Effects (SFX):**
+- `ball-paddle.wav` - Sound when ball hits paddle
+- `ball-wall.wav` - Sound when ball bounces off walls
+- `brick-break.wav` - Satisfying sound when bricks are destroyed
+- `brick-break-special.wav` - Unique sound for special/bonus bricks
+- `menu-select.wav` - UI sound for menu navigation
+- `menu-confirm.wav` - UI sound for menu selection
+- `life-lost.wav` - Sound when player loses a life
+- `stage-complete.wav` - Sound when completing a stage
+- `game-complete.wav` - Sound when completing all stages
+
+### Font Assets (`/assets/fonts/` directory)
+- `retro-pixel.ttf` - Pixel-perfect font for UI text and scores
+- `title-font.ttf` - Decorative font for game title and headers
+
+This asset structure provides everything needed for a complete retro Brickout game implementation in C with proper visual feedback, audio cues, and polished presentation. The HTML files in `/docs/` serve as design mockups to visualize the final game's appearance and user flow.
+
 ## 🤝 Contributing
 
 Feel free to open issues or submit pull requests if you find any bugs, have suggestions for improvements, or want to add your own spin to the project!
