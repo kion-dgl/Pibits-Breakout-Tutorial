@@ -107,7 +107,8 @@
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             grid-template-rows: repeat(5, 1fr);
-            gap: 3px;
+            gap: 8px;
+            padding: 10px;
         }
 
         .brick {
@@ -116,6 +117,8 @@
             position: relative;
             overflow: hidden;
             animation: brickShine 3s ease-in-out infinite;
+            height: 80%;
+            align-self: center;
         }
 
         @keyframes brickShine {
@@ -147,19 +150,16 @@
             width: 32px;
             height: 32px;
             background: 
-                conic-gradient(from 0deg, #ffffff 0deg 45deg, #ffff00 45deg 90deg, #ffffff 90deg 135deg, #ffff00 135deg 180deg, #ffffff 180deg 225deg, #ffff00 225deg 270deg, #ffffff 270deg 315deg, #ffff00 315deg 360deg),
-                radial-gradient(circle at 30% 30%, #ffffff, #ffff88);
-            border: 3px solid #333333;
+                repeating-conic-gradient(from 0deg, #ff0066 0deg 45deg, #ffffff 45deg 90deg),
+                radial-gradient(ellipse at 25% 25%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 20%, rgba(255,0,102,0.6) 40%, rgba(200,0,50,0.8) 70%, rgba(100,0,25,1) 100%);
+            border: 1px solid #333333;
             border-radius: 50%;
             top: 60%;
             left: 45%;
-            animation: ballRotate 1s linear infinite;
-            box-shadow: 0 0 20px rgba(255,255,0,0.8);
-        }
-
-        @keyframes ballRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            box-shadow: 
+                0 0 15px rgba(255,0,102,0.6),
+                inset -8px -8px 12px rgba(0,0,0,0.3),
+                inset 8px 8px 12px rgba(255,255,255,0.1);
         }
 
         .notes {
