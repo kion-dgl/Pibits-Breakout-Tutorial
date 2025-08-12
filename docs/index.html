@@ -89,7 +89,7 @@
 
         .game-title {
             position: absolute;
-            top: 10%;
+            top: 4%;
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
@@ -107,51 +107,17 @@
             margin-bottom: 10px;
         }
 
-        .english-title {
-            font-family: 'Fredoka One', cursive;
-            font-size: 96px;
-            background: linear-gradient(180deg, #00ff41 0%, #00cc33 50%, #009922 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-            position: relative;
-        }
-
-        .english-title::before {
-            content: "Break Out";
-            font-family: 'Fredoka One', cursive;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            color: #fff;
-            text-shadow:
-                -5px -5px 0 #fff,
-                5px -5px 0 #fff,
-                -5px 5px 0 #fff,
-                5px 5px 0 #fff,
-                -4px -4px 0 #fff,
-                4px -4px 0 #fff,
-                -4px 4px 0 #fff,
-                4px 4px 0 #fff,
-                -3px -3px 0 #fff,
-                3px -3px 0 #fff,
-                -3px 3px 0 #fff,
-                3px 3px 0 #fff,
-                -2px -2px 0 #fff,
-                2px -2px 0 #fff,
-                -2px 2px 0 #fff,
-                2px 2px 0 #fff,
-                -1px -1px 0 #fff,
-                1px -1px 0 #fff,
-                -1px 1px 0 #fff,
-                1px 1px 0 #fff;
+        .logo-image {
+            width: auto;
+            height: 340px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
 
         .menu {
             position: absolute;
-            top: 50%;
+            top: 57%;
             left: 30%;
             transform: translate(-50%, -50%);
             text-align: left;
@@ -161,7 +127,7 @@
             position: absolute;
             bottom: 0px;
             right: 20px;
-            height: 75%;
+            height: 70%;
             width: auto;
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
@@ -213,13 +179,13 @@
 
         .menu-item:hover .menu-text,
         .menu-item.active .menu-text {
-            color: #ffffff;
+            color: #ffffcc;
             text-shadow:
                 -2px -2px 0 #ffff00,
                 2px -2px 0 #ffff00,
                 -2px 2px 0 #ffff00,
                 2px 2px 0 #ffff00,
-                3px 3px 6px rgba(255, 255, 0, 0.8);
+                3px 3px 6px rgba(255, 255, 0, 0.6);
         }
 
         .notes {
@@ -241,7 +207,7 @@
 
         <div class="game-title">
             <div class="japanese-text">ブレークアウト</div>
-            <div class="english-title">Break Out</div>
+            <img src="img/brickout-logo.webp" alt="Break Out" class="logo-image">
         </div>
 
         <div class="menu">
