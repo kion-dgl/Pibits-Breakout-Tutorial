@@ -42,10 +42,12 @@ void gameplay_handle_input(Gameplay* gp, SDL_Event* e, int* next_state) {
                 // Advance to next stage
                 gp->stage++;
                 if (gp->stage > 5) {
-                    gp->stage = 1; // Loop back to stage 1 for now
+                    // All stages complete - trigger game complete state
+                    *next_state = GAME_STATE_COMPLETE;
+                } else {
+                    brick_grid_create_stage(&gp->brick_grid, gp->stage);
+                    gameplay_reset_ball(gp);
                 }
-                brick_grid_create_stage(&gp->brick_grid, gp->stage);
-                gameplay_reset_ball(gp);
                 break;
             case SDLK_p:
                 // Toggle pause

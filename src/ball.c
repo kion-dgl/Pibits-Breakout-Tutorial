@@ -25,8 +25,10 @@ void ball_update(Ball* ball, float delta_time) {
         ball->x = WINDOW_WIDTH - ball->width;
         ball_bounce_x(ball);
     }
-    if (ball->y <= 0) {
-        ball->y = 0;
+    // Top boundary is below the UI header (60px)
+    int header_height = 60;
+    if (ball->y <= header_height) {
+        ball->y = header_height;
         ball_bounce_y(ball);
     }
     

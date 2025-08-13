@@ -55,11 +55,11 @@ void gameover_screen_render(GameOverScreen* gos, SDL_Renderer* renderer) {
     
     // Render Kion defeated character
     if (gos->texture_manager->kion_ded.texture) {
-        int kion_scale = 3;
+        int kion_scale = 1; // Reduced from 3 to 1 (about half size)
         int kion_width = gos->texture_manager->kion_ded.width * kion_scale;
         int kion_height = gos->texture_manager->kion_ded.height * kion_scale;
-        int kion_x = 50;
-        int kion_y = WINDOW_HEIGHT - kion_height - 20;
+        int kion_x = 20; // Left side
+        int kion_y = WINDOW_HEIGHT - kion_height; // Flush with bottom
         render_texture(renderer, gos->texture_manager->kion_ded.texture, 
                       kion_x, kion_y, kion_width, kion_height);
     }
