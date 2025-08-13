@@ -249,6 +249,19 @@ bool gameplay_check_collisions(Gameplay* gp) {
         ball->vel_y = -fabs(ball->vel_y);
         ball->vel_x = normalized_hit * 150.0f;
         
+        // Accelerate ball slightly (1% speed increase per paddle bounce)
+        ball->vel_x *= 1.01f;
+        ball->vel_y *= 1.01f;
+        
+        // Cap maximum speed to prevent it getting too crazy
+        float max_speed = 500.0f;
+        if (fabs(ball->vel_x) > max_speed) {
+            ball->vel_x = ball->vel_x > 0 ? max_speed : -max_speed;
+        }
+        if (fabs(ball->vel_y) > max_speed) {
+            ball->vel_y = ball->vel_y > 0 ? max_speed : -max_speed;
+        }
+        
         // Make sure ball is above paddle
         ball->y = paddle->y - ball->height;
         

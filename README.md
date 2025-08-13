@@ -127,6 +127,132 @@ To create a complete Brickout game in C with OpenGL/SDL, you'll need the followi
 
 This asset structure provides everything needed for a complete retro Brickout game implementation in C with proper visual feedback, audio cues, and polished presentation. The HTML files in `/docs/` serve as design mockups to visualize the final game's appearance and user flow.
 
+## 🎯 Polish & Enhancement Features
+
+The following polish features would elevate the Brickout game experience from functional to exceptional:
+
+### **Visual Polish**
+- **Particle Effects** - Sparks and debris when bricks break for satisfying visual feedback
+- **Screen Shake** - Subtle camera shake on paddle hits and brick destruction for impact
+- **Brick Destruction Animations** - Smooth fade-out or cracking animations instead of instant disappearance
+- **Score Popup Text** - Floating score values that appear when hitting bricks (+10, +50, etc.)
+- **Ball Trail/Afterimage** - Motion blur effect showing ball's path at high speeds
+- **Animated UI Transitions** - Smooth fade/slide effects between game screens
+- **Lives Display Icons** - Show remaining lives as small ball icons instead of just numbers
+- **Stage Transition Effects** - Special animations when advancing to next stage
+
+### **Gameplay Polish**
+- **Ball Acceleration** ✅ *IMPLEMENTED* - Ball speed increases slightly after each bounce for progressive difficulty
+- **Random Ball Direction** ✅ *IMPLEMENTED* - Ball starts with random angle (±60°) after losing a life
+- **Power-ups System** - Special bricks that drop power-ups when destroyed:
+  - Multi-ball (2-3 balls simultaneously)
+  - Bigger paddle (temporary size increase)
+  - Slower ball (temporary speed reduction)
+  - Sticky paddle (ball sticks briefly before launch)
+  - Laser paddle (shoot through bricks)
+- **Brick Hit Points** - Different brick types requiring multiple hits to destroy
+- **Combo Scoring** - Consecutive brick hits within time window multiply score
+- **Bonus Stages** - Special challenge levels between regular stages
+
+### **Audio Polish**
+- **Dynamic SFX Pitch** - Ball collision sounds change pitch based on ball speed
+- **Crowd Audio Effects** - Cheering sounds on high scores or impressive plays
+- **Stage Completion Jingles** - Unique musical stingers for each stage completion
+- **Combo Audio Feedback** - Special sound effects for scoring streaks
+- **Ambient Cave Sounds** - Subtle environmental audio to match cave theme
+
+### **UI Polish**
+- **High Score System** - Save and display player's best scores with initials
+- **Stage Preview** - Brief preview of brick layout before stage starts
+- **Progress Indicators** - Visual stage progression (1/5, 2/5, etc.)
+- **Difficulty Selection** - Easy/Normal/Hard modes with different ball speeds
+- **Statistics Tracking** - Total bricks destroyed, accuracy percentage, play time
+
+### **Technical Polish**
+- **Save/Load System** - Resume games in progress
+- **Configuration Options** - Volume controls, control remapping
+- **Performance Optimization** - Smooth 60fps even on Raspberry Pi Zero 2W
+- **Controller Support** - Full gamepad compatibility beyond keyboard
+
+## 📦 Additional Assets Needed for Polish Features
+
+### **Enhanced Visual Assets**
+```
+/assets/textures/effects/
+├── particle-spark-01.png      # Small spark particle
+├── particle-spark-02.png      # Medium spark particle  
+├── particle-spark-03.png      # Large spark particle
+├── particle-debris-01.png     # Brick debris chunk
+├── particle-debris-02.png     # Smaller debris pieces
+├── ball-trail-segment.png     # Single trail segment for afterimage
+├── score-popup-bg.png         # Background for floating score text
+├── explosion-frame-01.png     # Brick destruction animation frame 1
+├── explosion-frame-02.png     # Brick destruction animation frame 2
+├── explosion-frame-03.png     # Brick destruction animation frame 3
+├── powerup-multiball.png      # Multi-ball power-up icon
+├── powerup-bigpaddle.png      # Big paddle power-up icon
+├── powerup-slowball.png       # Slow ball power-up icon
+├── powerup-sticky.png         # Sticky paddle power-up icon
+├── powerup-laser.png          # Laser paddle power-up icon
+├── life-icon-ball.png         # Ball icon for lives display
+├── progress-bar-bg.png        # Stage progress bar background
+├── progress-bar-fill.png      # Stage progress bar fill
+└── stage-preview-frame.png    # Border for stage preview window
+
+/assets/textures/bricks/
+├── brick-steel.png            # Multi-hit steel brick
+├── brick-cracked.png          # Damaged brick texture
+├── brick-powerup.png          # Special power-up containing brick
+└── brick-bonus.png            # High-value bonus brick
+```
+
+### **Enhanced Audio Assets**
+```
+/assets/audio/sfx/
+├── ball-hit-pitch-low.wav     # Low pitch ball collision
+├── ball-hit-pitch-med.wav     # Medium pitch ball collision  
+├── ball-hit-pitch-high.wav    # High pitch ball collision
+├── crowd-cheer-small.wav      # Light crowd reaction
+├── crowd-cheer-big.wav        # Enthusiastic crowd reaction
+├── combo-x2.wav              # 2x combo sound
+├── combo-x3.wav              # 3x combo sound
+├── combo-x5.wav              # 5x combo sound
+├── powerup-appear.wav         # Power-up drops from brick
+├── powerup-collect.wav        # Player collects power-up
+├── brick-crack.wav            # Brick takes damage but doesn't break
+├── explosion-small.wav        # Small brick destruction
+├── explosion-big.wav          # Large/special brick destruction
+├── stage-preview.wav          # Stage introduction sound
+├── score-popup.wav            # Points popup sound
+├── screen-shake.wav           # Impact sound for screen shake
+└── laser-shot.wav             # Laser paddle firing sound
+
+/assets/audio/bgm/
+├── stage-complete-jingle.wav  # Short victory tune for stage completion
+├── bonus-stage.ogg            # Upbeat music for bonus/challenge stages
+├── high-score.ogg             # Special music for high score entry
+└── ambient-cave.ogg           # Subtle cave atmosphere audio
+```
+
+### **Enhanced Font Assets**
+```
+/assets/fonts/
+├── score-popup.ttf            # Bold font for floating score numbers
+├── combo-display.ttf          # Stylized font for combo multipliers
+└── high-score-entry.ttf       # Classic arcade font for initials entry
+```
+
+### **Configuration Files**
+```
+/config/
+├── high-scores.json           # Persistent high score data
+├── game-settings.json         # Volume, difficulty, controls
+├── stage-layouts.json         # Custom stage brick patterns
+└── powerup-config.json        # Power-up spawn rates and effects
+```
+
+These enhancements would transform the basic Brickout implementation into a polished, engaging retro game worthy of the Pibit console concept, with smooth animations, satisfying feedback, and replayable gameplay mechanics.
+
 ## 🤝 Contributing
 
 Feel free to open issues or submit pull requests if you find any bugs, have suggestions for improvements, or want to add your own spin to the project!

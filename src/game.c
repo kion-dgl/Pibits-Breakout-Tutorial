@@ -1,8 +1,13 @@
 #include "game.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 int game_init(Game* game) {
     printf("DEBUG: Starting SDL initialization...\n");
+    
+    // Seed random number generator for random ball directions
+    srand(time(NULL));
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return -1;

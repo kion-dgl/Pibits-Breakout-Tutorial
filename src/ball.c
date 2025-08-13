@@ -2,6 +2,12 @@
 #include "game.h"
 #include "texture_manager.h"
 #include <math.h>
+#include <stdlib.h>
+#include <time.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 void ball_init(Ball* ball, float x, float y, SDL_Texture* texture) {
     ball->x = x;
@@ -48,17 +54,56 @@ void ball_render(Ball* ball, SDL_Renderer* renderer) {
 
 void ball_bounce_x(Ball* ball, TextureManager* tm) {
     ball->vel_x = -ball->vel_x;
+    
+    // Accelerate ball slightly (1% speed increase per bounce)
+    ball->vel_x *= 1.01f;
+    ball->vel_y *= 1.01f;
+    
+    // Cap maximum speed to prevent it getting too crazy
+    float max_speed = 500.0f;
+    if (fabs(ball->vel_x) > max_speed) {
+        ball->vel_x = ball->vel_x > 0 ? max_speed : -max_speed;
+    }
+    if (fabs(ball->vel_y) > max_speed) {
+        ball->vel_y = ball->vel_y > 0 ? max_speed : -max_speed;
+    }
+    
     play_sfx(tm->sfx_ball_wall);
 }
 
 void ball_bounce_y(Ball* ball, TextureManager* tm) {
     ball->vel_y = -ball->vel_y;
+    
+    // Accelerate ball slightly (1% speed increase per bounce)
+    ball->vel_x *= 1.01f;
+    ball->vel_y *= 1.01f;
+    
+    // Cap maximum speed to prevent it getting too crazy
+    float max_speed = 500.0f;
+    if (fabs(ball->vel_x) > max_speed) {
+        ball->vel_x = ball->vel_x > 0 ? max_speed : -max_speed;
+    }
+    if (fabs(ball->vel_y) > max_speed) {
+        ball->vel_y = ball->vel_y > 0 ? max_speed : -max_speed;
+    }
+    
     play_sfx(tm->sfx_ball_wall);
 }
 
 void ball_reset(Ball* ball, float x, float y) {
     ball->x = x;
     ball->y = y;
-    ball->vel_x = 200.0f;
-    ball->vel_y = -200.0f;
+    
+    // Always go upward, but randomize the horizontal direction and angle
+    ball->vel_y = -200.0f; // Always upward
+    
+    // Random angle between -60 to +60 degrees (converted to radians)
+    float angle_degrees = -60.0f + (rand() % 121); // -60 to +60
+    float angle_radians = angle_degrees * M_PI / 180.0f;
+    
+    // Calculate X velocity based on angle, maintaining roughly same speed
+    ball->vel_x = 200.0f * sinf(angle_radians);
+    
+    // Ensure Y velocity magnitude is consistent
+    ball->vel_y = -200.0f * cosf(angle_radians);
 }
