@@ -42,7 +42,7 @@ int texture_manager_init(TextureManager* tm, SDL_Renderer* renderer) {
     tm->font_title = NULL;
     
     printf("DEBUG: Loading background texture...\n");
-    tm->background.texture = load_texture(renderer, "docs/img/background.png", 
+    tm->background.texture = load_texture(renderer, "docs/img/background-bits.png", 
                                         &tm->background.width, &tm->background.height);
     if (!tm->background.texture) {
         printf("Warning: Failed to load background texture\n");
