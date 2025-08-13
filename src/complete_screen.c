@@ -22,7 +22,7 @@ void complete_screen_handle_input(CompleteScreen* cs, SDL_Event* e, int* next_st
             case SDLK_RETURN:
             case SDLK_SPACE:
                 if (cs->current_option == COMPLETE_PLAY_AGAIN) {
-                    *next_state = GAME_STATE_GAMEPLAY;
+                    *next_state = GAME_STATE_TITLE;
                 } else if (cs->current_option == COMPLETE_QUIT) {
                     *next_state = GAME_STATE_TITLE;
                 }
@@ -58,13 +58,13 @@ void complete_screen_render(CompleteScreen* cs, SDL_Renderer* renderer) {
     SDL_RenderFillRect(renderer, &overlay);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
     
-    // Render Kion happy character
+    // Render Kion happy character - match Kion-ded positioning
     if (cs->texture_manager->kion_happi.texture) {
-        int kion_scale = 3;
+        int kion_scale = 1; // Same scale as Kion-ded
         int kion_width = cs->texture_manager->kion_happi.width * kion_scale;
         int kion_height = cs->texture_manager->kion_happi.height * kion_scale;
-        int kion_x = 50;
-        int kion_y = WINDOW_HEIGHT - kion_height - 20;
+        int kion_x = 20; // Same position as Kion-ded
+        int kion_y = WINDOW_HEIGHT - kion_height; // Flush with bottom like Kion-ded
         render_texture(renderer, cs->texture_manager->kion_happi.texture, 
                       kion_x, kion_y, kion_width, kion_height);
     }
@@ -101,7 +101,7 @@ void complete_screen_render(CompleteScreen* cs, SDL_Renderer* renderer) {
             SDL_DestroyTexture(score_texture);
         }
         
-        char congratulations[] = "Congratulations! You've completed all stages!";
+        char congratulations[] = "All stages complete!";
         int congrats_width, congrats_height;
         SDL_Texture* congrats_texture = create_text_texture(renderer, cs->texture_manager->font_regular, 
                                                           congratulations, white_color, &congrats_width, &congrats_height);
