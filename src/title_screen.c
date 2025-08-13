@@ -6,6 +6,9 @@ void title_screen_init(TitleScreen* ts, TextureManager* tm) {
     ts->current_option = MENU_START_GAME;
     ts->arrow_rotation = 0.0f;
     ts->texture_manager = tm;
+    
+    // Start title screen BGM
+    play_bgm(tm->bgm_title);
 }
 
 void title_screen_handle_input(TitleScreen* ts, SDL_Event* e, int* next_state) {
@@ -13,12 +16,15 @@ void title_screen_handle_input(TitleScreen* ts, SDL_Event* e, int* next_state) {
         switch (e->key.keysym.sym) {
             case SDLK_UP:
                 ts->current_option = (ts->current_option - 1 + MENU_COUNT) % MENU_COUNT;
+                play_sfx(ts->texture_manager->sfx_menu_select);
                 break;
             case SDLK_DOWN:
                 ts->current_option = (ts->current_option + 1) % MENU_COUNT;
+                play_sfx(ts->texture_manager->sfx_menu_select);
                 break;
             case SDLK_RETURN:
             case SDLK_SPACE:
+                play_sfx(ts->texture_manager->sfx_menu_select);
                 if (ts->current_option == MENU_START_GAME) {
                     *next_state = GAME_STATE_GAMEPLAY;
                 } else if (ts->current_option == MENU_QUIT_GAME) {

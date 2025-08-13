@@ -7,6 +7,10 @@ void complete_screen_init(CompleteScreen* cs, TextureManager* tm, int score) {
     cs->current_option = COMPLETE_PLAY_AGAIN;
     cs->texture_manager = tm;
     cs->final_score = score;
+    
+    // Start game complete BGM
+    play_bgm(tm->bgm_complete);
+    
     printf("DEBUG: complete_screen_init completed\n");
 }
 
@@ -15,12 +19,15 @@ void complete_screen_handle_input(CompleteScreen* cs, SDL_Event* e, int* next_st
         switch (e->key.keysym.sym) {
             case SDLK_UP:
                 cs->current_option = (cs->current_option - 1 + COMPLETE_MENU_COUNT) % COMPLETE_MENU_COUNT;
+                play_sfx(cs->texture_manager->sfx_menu_select);
                 break;
             case SDLK_DOWN:
                 cs->current_option = (cs->current_option + 1) % COMPLETE_MENU_COUNT;
+                play_sfx(cs->texture_manager->sfx_menu_select);
                 break;
             case SDLK_RETURN:
             case SDLK_SPACE:
+                play_sfx(cs->texture_manager->sfx_menu_select);
                 if (cs->current_option == COMPLETE_PLAY_AGAIN) {
                     *next_state = GAME_STATE_TITLE;
                 } else if (cs->current_option == COMPLETE_QUIT) {

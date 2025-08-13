@@ -7,6 +7,9 @@ void gameover_screen_init(GameOverScreen* gos, TextureManager* tm, int score, in
     gos->texture_manager = tm;
     gos->final_score = score;
     gos->final_stage = stage;
+    
+    // Start game over BGM
+    play_bgm(tm->bgm_gameover);
 }
 
 void gameover_screen_handle_input(GameOverScreen* gos, SDL_Event* e, int* next_state) {
@@ -14,12 +17,15 @@ void gameover_screen_handle_input(GameOverScreen* gos, SDL_Event* e, int* next_s
         switch (e->key.keysym.sym) {
             case SDLK_UP:
                 gos->current_option = (gos->current_option - 1 + GAMEOVER_MENU_COUNT) % GAMEOVER_MENU_COUNT;
+                play_sfx(gos->texture_manager->sfx_menu_select);
                 break;
             case SDLK_DOWN:
                 gos->current_option = (gos->current_option + 1) % GAMEOVER_MENU_COUNT;
+                play_sfx(gos->texture_manager->sfx_menu_select);
                 break;
             case SDLK_RETURN:
             case SDLK_SPACE:
+                play_sfx(gos->texture_manager->sfx_menu_select);
                 if (gos->current_option == GAMEOVER_RETRY) {
                     *next_state = GAME_STATE_GAMEPLAY;
                 } else if (gos->current_option == GAMEOVER_QUIT) {

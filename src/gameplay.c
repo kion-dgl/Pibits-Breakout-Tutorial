@@ -3,12 +3,26 @@
 #include <math.h>
 #include <stdio.h>
 
+Mix_Music* get_stage_bgm(TextureManager* tm, int stage) {
+    switch (stage) {
+        case 1: return tm->bgm_stage1;
+        case 2: return tm->bgm_stage2;
+        case 3: return tm->bgm_stage3;
+        case 4: return tm->bgm_stage4;
+        case 5: return tm->bgm_stage5;
+        default: return tm->bgm_stage1;
+    }
+}
+
 void gameplay_init(Gameplay* gp, TextureManager* tm) {
     gp->texture_manager = tm;
     gp->lives = 3;
     gp->score = 0;
     gp->stage = 1;
     gp->paused = false;
+    
+    // Start stage 1 BGM
+    play_bgm(get_stage_bgm(tm, 1));
     
     // Initialize paddle
     float paddle_x = (WINDOW_WIDTH - 64) / 2.0f;
@@ -77,7 +91,7 @@ void gameplay_update(Gameplay* gp, float delta_time, int* next_state) {
     paddle_update(&gp->paddle, keyboard_state, delta_time);
     
     // Update ball
-    ball_update(&gp->ball, delta_time);
+    ball_update(&gp->ball, delta_time, gp->texture_manager);
     
     // Check collisions
     gameplay_check_collisions(gp);
@@ -93,12 +107,19 @@ void gameplay_update(Gameplay* gp, float delta_time, int* next_state) {
             brick_grid_create_stage(&gp->brick_grid, gp->stage);
             gameplay_reset_ball(gp);
             gp->score += 100; // Bonus for completing stage
+            
+            // Change BGM for new stage
+            play_bgm(get_stage_bgm(gp->texture_manager, gp->stage));
         }
     }
     
     // Check if ball went off bottom
     if (gp->ball.y > WINDOW_HEIGHT) {
         gp->lives--;
+        
+        // Play lose life SFX
+        play_sfx(gp->texture_manager->sfx_lose_life);
+        
         if (gp->lives <= 0) {
             gp->lives = 0; // Prevent negative lives
             *next_state = GAME_STATE_GAMEOVER;
@@ -228,15 +249,22 @@ bool gameplay_check_collisions(Gameplay* gp) {
         // Make sure ball is above paddle
         ball->y = paddle->y - ball->height;
         
+        // Play paddle hit SFX
+        play_sfx(gp->texture_manager->sfx_ball_paddle);
+        
         return true;
     }
     
     // Ball-brick collision
     if (brick_grid_check_collision(&gp->brick_grid, ball->x, ball->y, ball->width, ball->height)) {
-        ball_bounce_y(ball);
+        ball_bounce_y(ball, gp->texture_manager);
         // Scoring: different points for different brick types and stages
         int brick_points = 10 + (gp->stage * 5); // Higher stages worth more
         gp->score += brick_points;
+        
+        // Play brick hit SFX
+        play_sfx(gp->texture_manager->sfx_ball_brick);
+        
         return true;
     }
     

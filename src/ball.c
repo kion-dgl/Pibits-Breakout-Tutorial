@@ -1,5 +1,6 @@
 #include "ball.h"
 #include "game.h"
+#include "texture_manager.h"
 #include <math.h>
 
 void ball_init(Ball* ball, float x, float y, SDL_Texture* texture) {
@@ -12,24 +13,24 @@ void ball_init(Ball* ball, float x, float y, SDL_Texture* texture) {
     ball->texture = texture;
 }
 
-void ball_update(Ball* ball, float delta_time) {
+void ball_update(Ball* ball, float delta_time, TextureManager* tm) {
     ball->x += ball->vel_x * delta_time;
     ball->y += ball->vel_y * delta_time;
     
     // Wall collision detection
     if (ball->x <= 0) {
         ball->x = 0;
-        ball_bounce_x(ball);
+        ball_bounce_x(ball, tm);
     }
     if (ball->x + ball->width >= WINDOW_WIDTH) {
         ball->x = WINDOW_WIDTH - ball->width;
-        ball_bounce_x(ball);
+        ball_bounce_x(ball, tm);
     }
     // Top boundary is below the UI header (60px)
     int header_height = 60;
     if (ball->y <= header_height) {
         ball->y = header_height;
-        ball_bounce_y(ball);
+        ball_bounce_y(ball, tm);
     }
     
     // Ball goes off bottom - will be handled by game logic
@@ -45,12 +46,14 @@ void ball_render(Ball* ball, SDL_Renderer* renderer) {
     }
 }
 
-void ball_bounce_x(Ball* ball) {
+void ball_bounce_x(Ball* ball, TextureManager* tm) {
     ball->vel_x = -ball->vel_x;
+    play_sfx(tm->sfx_ball_wall);
 }
 
-void ball_bounce_y(Ball* ball) {
+void ball_bounce_y(Ball* ball, TextureManager* tm) {
     ball->vel_y = -ball->vel_y;
+    play_sfx(tm->sfx_ball_wall);
 }
 
 void ball_reset(Ball* ball, float x, float y) {
