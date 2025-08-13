@@ -226,6 +226,9 @@ void gameplay_reset_game(Gameplay* gp) {
     // Reset to stage 1
     brick_grid_create_stage(&gp->brick_grid, gp->stage);
     gameplay_reset_ball(gp);
+    
+    // Start stage 1 BGM
+    play_bgm(get_stage_bgm(gp->texture_manager, 1));
 }
 
 bool gameplay_check_collisions(Gameplay* gp) {

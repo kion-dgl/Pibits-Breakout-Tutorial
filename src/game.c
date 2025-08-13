@@ -146,6 +146,10 @@ void game_handle_events(Game* game) {
             case GAME_STATE_TITLE: {
                 int next_state = game->current_state;
                 title_screen_handle_input(&game->title_screen, &e, &next_state);
+                if (next_state == GAME_STATE_GAMEPLAY) {
+                    // Reset game when starting new game from title
+                    gameplay_reset_game(&game->gameplay);
+                }
                 game->current_state = next_state;
                 break;
             }
