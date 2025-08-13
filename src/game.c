@@ -152,6 +152,13 @@ void game_handle_events(Game* game) {
             case GAME_STATE_GAMEPLAY: {
                 int next_state = game->current_state;
                 gameplay_handle_input(&game->gameplay, &e, &next_state);
+                if (next_state == GAME_STATE_COMPLETE) {
+                    // Initialize complete screen when transitioning from input
+                    printf("DEBUG: Input triggered complete state, initializing complete screen\n");
+                    fflush(stdout);
+                    complete_screen_init(&game->complete_screen, &game->texture_manager, 
+                                       game->gameplay.score);
+                }
                 game->current_state = next_state;
                 break;
             }
@@ -166,13 +173,19 @@ void game_handle_events(Game* game) {
                 break;
             }
             case GAME_STATE_COMPLETE: {
+                printf("DEBUG: Handling input for complete screen\n");
+                fflush(stdout);
                 int next_state = game->current_state;
                 complete_screen_handle_input(&game->complete_screen, &e, &next_state);
                 if (next_state == GAME_STATE_GAMEPLAY) {
                     // Reset game when playing again
+                    printf("DEBUG: Resetting game for play again\n");
+                    fflush(stdout);
                     gameplay_reset_game(&game->gameplay);
                 }
                 game->current_state = next_state;
+                printf("DEBUG: Complete screen input handled\n");
+                fflush(stdout);
                 break;
             }
             case GAME_STATE_QUIT:
@@ -192,12 +205,18 @@ void game_update(Game* game) {
             gameplay_update(&game->gameplay, game->delta_time, &next_state);
             if (next_state == GAME_STATE_GAMEOVER) {
                 // Initialize game over screen with final stats
+                printf("DEBUG: Initializing game over screen\n");
                 gameover_screen_init(&game->gameover_screen, &game->texture_manager, 
                                    game->gameplay.score, game->gameplay.stage);
+                printf("DEBUG: Game over screen initialized\n");
             } else if (next_state == GAME_STATE_COMPLETE) {
                 // Initialize complete screen with final score
+                printf("DEBUG: Initializing complete screen with score: %d\n", game->gameplay.score);
+                fflush(stdout);
                 complete_screen_init(&game->complete_screen, &game->texture_manager, 
                                    game->gameplay.score);
+                printf("DEBUG: Complete screen initialized\n");
+                fflush(stdout);
             }
             game->current_state = next_state;
             break;
@@ -206,7 +225,9 @@ void game_update(Game* game) {
             gameover_screen_update(&game->gameover_screen, game->delta_time);
             break;
         case GAME_STATE_COMPLETE:
+            printf("DEBUG: Updating complete screen\n");
             complete_screen_update(&game->complete_screen, game->delta_time);
+            printf("DEBUG: Complete screen updated\n");
             break;
         case GAME_STATE_QUIT:
             game->running = false;
@@ -229,7 +250,9 @@ void game_render(Game* game) {
             gameover_screen_render(&game->gameover_screen, game->renderer);
             break;
         case GAME_STATE_COMPLETE:
+            printf("DEBUG: Rendering complete screen\n");
             complete_screen_render(&game->complete_screen, game->renderer);
+            printf("DEBUG: Complete screen rendered\n");
             break;
         case GAME_STATE_QUIT:
             break;

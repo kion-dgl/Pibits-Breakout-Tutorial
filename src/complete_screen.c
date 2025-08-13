@@ -3,9 +3,11 @@
 #include <stdio.h>
 
 void complete_screen_init(CompleteScreen* cs, TextureManager* tm, int score) {
+    printf("DEBUG: complete_screen_init called with score: %d\n", score);
     cs->current_option = COMPLETE_PLAY_AGAIN;
     cs->texture_manager = tm;
     cs->final_score = score;
+    printf("DEBUG: complete_screen_init completed\n");
 }
 
 void complete_screen_handle_input(CompleteScreen* cs, SDL_Event* e, int* next_state) {
@@ -39,10 +41,14 @@ void complete_screen_update(CompleteScreen* cs, float delta_time) {
 }
 
 void complete_screen_render(CompleteScreen* cs, SDL_Renderer* renderer) {
+    printf("DEBUG: complete_screen_render started\n");
+    
     // Render background (bright)
     if (cs->texture_manager->background.texture) {
+        printf("DEBUG: Rendering background\n");
         render_texture(renderer, cs->texture_manager->background.texture, 
                       0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        printf("DEBUG: Background rendered\n");
     }
     
     // Render bright overlay

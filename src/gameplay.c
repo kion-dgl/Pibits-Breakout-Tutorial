@@ -40,13 +40,21 @@ void gameplay_handle_input(Gameplay* gp, SDL_Event* e, int* next_state) {
                 break;
             case SDLK_SPACE:
                 // Advance to next stage
+                printf("DEBUG: Space pressed, current stage: %d\n", gp->stage);
+                fflush(stdout);
                 gp->stage++;
+                printf("DEBUG: Stage incremented to: %d\n", gp->stage);
+                fflush(stdout);
                 if (gp->stage > 5) {
                     // All stages complete - trigger game complete state
+                    printf("DEBUG: Triggering GAME_STATE_COMPLETE\n");
+                    fflush(stdout);
                     *next_state = GAME_STATE_COMPLETE;
                 } else {
+                    printf("DEBUG: Creating stage %d\n", gp->stage);
                     brick_grid_create_stage(&gp->brick_grid, gp->stage);
                     gameplay_reset_ball(gp);
+                    printf("DEBUG: Stage %d created and ball reset\n", gp->stage);
                 }
                 break;
             case SDLK_p:
