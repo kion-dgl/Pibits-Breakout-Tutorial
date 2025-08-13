@@ -9,6 +9,8 @@
 #include "texture_manager.h"
 #include "title_screen.h"
 #include "gameplay.h"
+#include "gameover_screen.h"
+#include "complete_screen.h"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -32,6 +34,8 @@ typedef struct {
     TextureManager texture_manager;
     TitleScreen title_screen;
     Gameplay gameplay;
+    GameOverScreen gameover_screen;
+    CompleteScreen complete_screen;
 } Game;
 
 int game_init(Game* game);

@@ -24,7 +24,7 @@ A --> B
 B -->|Start Game| C
 B -->|Quit Game| F
 C -->|Lose Lives| D
-C -->|Comeple Game| E
+C -->|Complete Game| E
 D -->|Retry| C
 D -->|Quit Game| F
 E -->|Play Again| B

@@ -1,6 +1,7 @@
 #include "brick.h"
 #include "game.h"
 #include <stdlib.h>
+#include <math.h>
 
 void brick_init(Brick* brick, float x, float y, BrickType type, SDL_Texture* texture) {
     brick->x = x;
@@ -70,6 +71,53 @@ void brick_grid_create_stage(BrickGrid* grid, int stage) {
                 if ((row + col) % 2 == 0 && grid->count < MAX_BRICKS) {
                     float x = start_x + col * brick_width;
                     float y = start_y + row * brick_height;
+                    BrickType type = row_types[(row/2) % BRICK_TYPES_COUNT];
+                    
+                    brick_init(&grid->bricks[grid->count], x, y, type, grid->textures[type]);
+                    grid->bricks[grid->count].width = brick_width - 2;
+                    grid->count++;
+                }
+            }
+        }
+    } else if (stage == 3) {
+        // Stage 3: Diamond formation with gaps
+        int rows = 7;
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                int center = cols / 2;
+                int distance_from_center = abs(col - center);
+                int max_distance_for_row = (row < rows/2) ? row + 1 : rows - row;
+                
+                if (distance_from_center < max_distance_for_row && grid->count < MAX_BRICKS) {
+                    float x = start_x + col * brick_width;
+                    float y = start_y + row * brick_height;
+                    BrickType type = row_types[distance_from_center % BRICK_TYPES_COUNT];
+                    
+                    brick_init(&grid->bricks[grid->count], x, y, type, grid->textures[type]);
+                    grid->bricks[grid->count].width = brick_width - 2;
+                    grid->count++;
+                }
+            }
+        }
+    } else if (stage == 4) {
+        // Stage 4: Fortress pattern (6 rows)
+        int rows = 6;
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                bool place_brick = false;
+                
+                // Fortress walls (outer edges) and internal structure
+                if (row == 0 || row == rows-1 || col == 0 || col == cols-1) {
+                    place_brick = true; // Outer walls
+                } else if (row == 2 && (col == 3 || col == 4 || col == 7 || col == 8)) {
+                    place_brick = true; // Internal fortifications
+                } else if (row == 3 && (col == 2 || col == 5 || col == 6 || col == 9)) {
+                    place_brick = true; // More internal structure
+                }
+                
+                if (place_brick && grid->count < MAX_BRICKS) {
+                    float x = start_x + col * brick_width;
+                    float y = start_y + row * brick_height;
                     BrickType type = row_types[row % BRICK_TYPES_COUNT];
                     
                     brick_init(&grid->bricks[grid->count], x, y, type, grid->textures[type]);
@@ -78,15 +126,26 @@ void brick_grid_create_stage(BrickGrid* grid, int stage) {
                 }
             }
         }
-    } else {
-        // Default: Same as stage 1 for stages 3-5
-        int rows = 5 + (stage - 1); // More rows for higher stages
+    } else if (stage == 5) {
+        // Stage 5: Maze pattern (7 rows)
+        int rows = 7;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                if (grid->count < MAX_BRICKS) {
+                bool place_brick = false;
+                
+                // Create maze-like pattern
+                if (row % 2 == 0) {
+                    // Even rows: mostly solid with gaps
+                    place_brick = (col % 3 != 1);
+                } else {
+                    // Odd rows: sparse pattern
+                    place_brick = (col % 4 == 1 || col % 4 == 3);
+                }
+                
+                if (place_brick && grid->count < MAX_BRICKS) {
                     float x = start_x + col * brick_width;
                     float y = start_y + row * brick_height;
-                    BrickType type = row_types[row % BRICK_TYPES_COUNT];
+                    BrickType type = row_types[col % BRICK_TYPES_COUNT];
                     
                     brick_init(&grid->bricks[grid->count], x, y, type, grid->textures[type]);
                     grid->bricks[grid->count].width = brick_width - 2;
@@ -119,4 +178,13 @@ bool brick_grid_check_collision(BrickGrid* grid, float ball_x, float ball_y, flo
         }
     }
     return false;
+}
+
+bool brick_grid_all_destroyed(BrickGrid* grid) {
+    for (int i = 0; i < grid->count; i++) {
+        if (!grid->bricks[i].destroyed) {
+            return false; // Found a brick that's not destroyed
+        }
+    }
+    return true; // All bricks destroyed
 }

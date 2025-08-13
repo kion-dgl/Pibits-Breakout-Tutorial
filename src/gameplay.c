@@ -8,6 +8,7 @@ void gameplay_init(Gameplay* gp, TextureManager* tm) {
     gp->lives = 3;
     gp->score = 0;
     gp->stage = 1;
+    gp->paused = false;
     
     // Initialize paddle
     float paddle_x = (WINDOW_WIDTH - 64) / 2.0f;
@@ -46,11 +47,20 @@ void gameplay_handle_input(Gameplay* gp, SDL_Event* e, int* next_state) {
                 brick_grid_create_stage(&gp->brick_grid, gp->stage);
                 gameplay_reset_ball(gp);
                 break;
+            case SDLK_p:
+                // Toggle pause
+                gp->paused = !gp->paused;
+                break;
         }
     }
 }
 
-void gameplay_update(Gameplay* gp, float delta_time) {
+void gameplay_update(Gameplay* gp, float delta_time, int* next_state) {
+    // Don't update game logic if paused
+    if (gp->paused) {
+        return;
+    }
+    
     const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
     
     // Update paddle
@@ -62,12 +72,26 @@ void gameplay_update(Gameplay* gp, float delta_time) {
     // Check collisions
     gameplay_check_collisions(gp);
     
+    // Check if all bricks destroyed (stage complete)
+    if (brick_grid_all_destroyed(&gp->brick_grid)) {
+        gp->stage++;
+        if (gp->stage > 5) {
+            // All stages complete - trigger game complete state
+            *next_state = GAME_STATE_COMPLETE;
+        } else {
+            // Advance to next stage
+            brick_grid_create_stage(&gp->brick_grid, gp->stage);
+            gameplay_reset_ball(gp);
+            gp->score += 100; // Bonus for completing stage
+        }
+    }
+    
     // Check if ball went off bottom
     if (gp->ball.y > WINDOW_HEIGHT) {
         gp->lives--;
         if (gp->lives <= 0) {
             gp->lives = 0; // Prevent negative lives
-            // TODO: Trigger game over state
+            *next_state = GAME_STATE_GAMEOVER;
         } else {
             gameplay_reset_ball(gp);
         }
@@ -130,12 +154,47 @@ void gameplay_render(Gameplay* gp, SDL_Renderer* renderer) {
     brick_grid_render(&gp->brick_grid, renderer);
     paddle_render(&gp->paddle, renderer);
     ball_render(&gp->ball, renderer);
+    
+    // Render pause overlay
+    if (gp->paused && gp->texture_manager->font_regular) {
+        SDL_Color white_color = {255, 255, 255, 255};
+        
+        char pause_text[] = "PAUSED - Press P to Resume";
+        int pause_width, pause_height;
+        SDL_Texture* pause_texture = create_text_texture(renderer, gp->texture_manager->font_regular, 
+                                                        pause_text, white_color, &pause_width, &pause_height);
+        if (pause_texture) {
+            int pause_x = (WINDOW_WIDTH - pause_width) / 2;
+            int pause_y = (WINDOW_HEIGHT - pause_height) / 2;
+            
+            // Semi-transparent background
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+            SDL_Rect pause_bg = {pause_x - 10, pause_y - 10, pause_width + 20, pause_height + 20};
+            SDL_RenderFillRect(renderer, &pause_bg);
+            
+            render_texture(renderer, pause_texture, pause_x, pause_y, pause_width, pause_height);
+            SDL_DestroyTexture(pause_texture);
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+        }
+    }
 }
 
 void gameplay_reset_ball(Gameplay* gp) {
     float ball_x = (WINDOW_WIDTH - 16) / 2.0f;
     float ball_y = gp->paddle.y - 20;
     ball_reset(&gp->ball, ball_x, ball_y);
+}
+
+void gameplay_reset_game(Gameplay* gp) {
+    gp->lives = 3;
+    gp->score = 0;
+    gp->stage = 1;
+    gp->paused = false;
+    
+    // Reset to stage 1
+    brick_grid_create_stage(&gp->brick_grid, gp->stage);
+    gameplay_reset_ball(gp);
 }
 
 bool gameplay_check_collisions(Gameplay* gp) {
@@ -165,7 +224,9 @@ bool gameplay_check_collisions(Gameplay* gp) {
     // Ball-brick collision
     if (brick_grid_check_collision(&gp->brick_grid, ball->x, ball->y, ball->width, ball->height)) {
         ball_bounce_y(ball);
-        gp->score += 10;
+        // Scoring: different points for different brick types and stages
+        int brick_points = 10 + (gp->stage * 5); // Higher stages worth more
+        gp->score += brick_points;
         return true;
     }
     

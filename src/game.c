@@ -70,6 +70,8 @@ int game_init(Game* game) {
     gameplay_init(&game->gameplay, &game->texture_manager);
     printf("DEBUG: Gameplay initialized successfully\n");
     
+    // Note: gameover_screen and complete_screen will be initialized when needed
+    
     game->current_state = GAME_STATE_TITLE;
     game->running = true;
     game->last_time = SDL_GetTicks();
@@ -153,10 +155,26 @@ void game_handle_events(Game* game) {
                 game->current_state = next_state;
                 break;
             }
-            case GAME_STATE_GAMEOVER:
+            case GAME_STATE_GAMEOVER: {
+                int next_state = game->current_state;
+                gameover_screen_handle_input(&game->gameover_screen, &e, &next_state);
+                if (next_state == GAME_STATE_GAMEPLAY) {
+                    // Reset game when retrying
+                    gameplay_reset_game(&game->gameplay);
+                }
+                game->current_state = next_state;
                 break;
-            case GAME_STATE_COMPLETE:
+            }
+            case GAME_STATE_COMPLETE: {
+                int next_state = game->current_state;
+                complete_screen_handle_input(&game->complete_screen, &e, &next_state);
+                if (next_state == GAME_STATE_GAMEPLAY) {
+                    // Reset game when playing again
+                    gameplay_reset_game(&game->gameplay);
+                }
+                game->current_state = next_state;
                 break;
+            }
             case GAME_STATE_QUIT:
                 game->running = false;
                 break;
@@ -169,12 +187,26 @@ void game_update(Game* game) {
         case GAME_STATE_TITLE:
             title_screen_update(&game->title_screen, game->delta_time);
             break;
-        case GAME_STATE_GAMEPLAY:
-            gameplay_update(&game->gameplay, game->delta_time);
+        case GAME_STATE_GAMEPLAY: {
+            int next_state = game->current_state;
+            gameplay_update(&game->gameplay, game->delta_time, &next_state);
+            if (next_state == GAME_STATE_GAMEOVER) {
+                // Initialize game over screen with final stats
+                gameover_screen_init(&game->gameover_screen, &game->texture_manager, 
+                                   game->gameplay.score, game->gameplay.stage);
+            } else if (next_state == GAME_STATE_COMPLETE) {
+                // Initialize complete screen with final score
+                complete_screen_init(&game->complete_screen, &game->texture_manager, 
+                                   game->gameplay.score);
+            }
+            game->current_state = next_state;
             break;
+        }
         case GAME_STATE_GAMEOVER:
+            gameover_screen_update(&game->gameover_screen, game->delta_time);
             break;
         case GAME_STATE_COMPLETE:
+            complete_screen_update(&game->complete_screen, game->delta_time);
             break;
         case GAME_STATE_QUIT:
             game->running = false;
@@ -194,8 +226,10 @@ void game_render(Game* game) {
             gameplay_render(&game->gameplay, game->renderer);
             break;
         case GAME_STATE_GAMEOVER:
+            gameover_screen_render(&game->gameover_screen, game->renderer);
             break;
         case GAME_STATE_COMPLETE:
+            complete_screen_render(&game->complete_screen, game->renderer);
             break;
         case GAME_STATE_QUIT:
             break;

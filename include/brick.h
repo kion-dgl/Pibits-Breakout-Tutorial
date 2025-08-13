@@ -35,5 +35,6 @@ void brick_grid_init(BrickGrid* grid, SDL_Texture* textures[BRICK_TYPES_COUNT]);
 void brick_grid_create_stage(BrickGrid* grid, int stage);
 void brick_grid_render(BrickGrid* grid, SDL_Renderer* renderer);
 bool brick_grid_check_collision(BrickGrid* grid, float ball_x, float ball_y, float ball_w, float ball_h);
+bool brick_grid_all_destroyed(BrickGrid* grid);
 
 #endif
